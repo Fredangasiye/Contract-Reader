@@ -1,0 +1,12 @@
+{
+    "name": "contract-reader",
+    "version": "1.0.0",
+    "description": "Contract Reader Monorepo",
+    "scripts": {
+        "backend": "cd backend && npm run dev",
+        "frontend": "cd frontend && npm run dev"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT"
+}

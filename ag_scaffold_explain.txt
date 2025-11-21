@@ -1,0 +1,17 @@
+To run the project locally:
+
+1. Backend:
+   cd backend
+   npm install
+   npm run dev
+   # Server runs on http://localhost:8080
+
+2. Frontend:
+   cd frontend
+   npm install
+   npm run dev
+   # App runs on http://localhost:5173
+
+3. Verification:
+   - Backend Health: curl http://localhost:8080/health
+   - Frontend: Open http://localhost:5173 in your browser
