@@ -8,5 +8,9 @@
     },
     "keywords": [],
     "author": "",
-    "license": "MIT"
+    "license": "MIT",
+    "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "dotenv": "^17.2.3"
+    }
 }
