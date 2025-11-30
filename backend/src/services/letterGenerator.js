@@ -130,6 +130,23 @@ I expect written confirmation within 5 business days.
 Sincerely,
 {user_name}
 {date}`
+    },
+
+    other_dispute: {
+        subject: 'Formal Dispute Letter',
+        template: `Dear {recipient_name},
+
+I am writing regarding a dispute with {recipient_company}.
+
+{dispute_details}
+
+{red_flags_section}
+
+I request that you address this matter immediately. Please provide a written response within 10 business days.
+
+Sincerely,
+{user_name}
+{date}`
     }
 };
 

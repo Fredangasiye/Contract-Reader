@@ -5,7 +5,6 @@ import { useAuth } from '../contexts/AuthContext';
 import './LetterGenerator.css';
 
 export function LetterGenerator() {
-    const [templates, setTemplates] = useState([]);
     const [selectedTemplate, setSelectedTemplate] = useState('');
     const [userInfo, setUserInfo] = useState({ name: '', email: '', phone: '' });
     const [customData, setCustomData] = useState({});
@@ -14,6 +13,15 @@ export function LetterGenerator() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const { user, isPremium } = useAuth();
+
+    const TEMPLATES = [
+        { id: 'gym_cancellation', name: 'Gym Cancellation', icon: '🏋️', subject: 'Membership Cancellation Request' },
+        { id: 'insurance_claim_dispute', name: 'Insurance Dispute', icon: '🛡️', subject: 'Formal Dispute of Claim Denial' },
+        { id: 'lease_violation', name: 'Lease Violation', icon: '🏠', subject: 'Notice of Lease Violation and Remedy Request' },
+        { id: 'employment_negotiation', name: 'Employment Negotiation', icon: '💼', subject: 'Request to Modify Employment Terms' },
+        { id: 'service_cancellation', name: 'Service Cancellation', icon: '🔌', subject: 'Service Cancellation Request' },
+        { id: 'other_dispute', name: 'Other / Custom', icon: '📝', subject: 'Formal Dispute Letter' }
+    ];
 
     useEffect(() => {
         if (!user) {
@@ -24,17 +32,7 @@ export function LetterGenerator() {
             navigate('/pricing');
             return;
         }
-        loadTemplates();
     }, [user]);
-
-    const loadTemplates = async () => {
-        try {
-            const data = await getLetterTemplates();
-            setTemplates(data.templates);
-        } catch (err) {
-            setError('Failed to load templates');
-        }
-    };
 
     const handleGenerate = async (e) => {
         e.preventDefault();
@@ -72,11 +70,42 @@ export function LetterGenerator() {
 
     const getTemplateFields = (templateId) => {
         const fields = {
-            gym_cancellation: ['gym_name', 'member_id', 'sign_date', 'reason'],
-            insurance_claim_dispute: ['insurance_company', 'claim_number', 'claim_date', 'policy_number', 'situation'],
-            lease_violation: ['landlord_name', 'property_address', 'situation', 'remedy_period'],
-            employment_negotiation: ['employer_name', 'position', 'company_name', 'concerns'],
-            service_cancellation: ['service_provider', 'account_number', 'cancellation_date', 'reason']
+            gym_cancellation: [
+                { name: 'gym_name', label: 'Gym Name', placeholder: 'e.g. FitLife Gym' },
+                { name: 'member_id', label: 'Membership ID', placeholder: 'e.g. 12345678' },
+                { name: 'sign_date', label: 'Date Signed', placeholder: 'e.g. January 1, 2023' },
+                { name: 'reason', label: 'Reason for Cancellation', placeholder: 'e.g. Relocation, Medical reasons' }
+            ],
+            insurance_claim_dispute: [
+                { name: 'insurance_company', label: 'Insurance Company', placeholder: 'e.g. SafeGuard Insurance' },
+                { name: 'policy_number', label: 'Policy Number', placeholder: 'e.g. POL-987654321' },
+                { name: 'claim_number', label: 'Claim Number', placeholder: 'e.g. CLM-12345' },
+                { name: 'claim_date', label: 'Date of Claim', placeholder: 'e.g. March 15, 2024' },
+                { name: 'situation', label: 'Reason for Denial / Dispute Details', placeholder: 'Explain why the claim was denied and why you disagree...' }
+            ],
+            lease_violation: [
+                { name: 'landlord_name', label: 'Landlord / Property Manager', placeholder: 'e.g. John Smith' },
+                { name: 'property_address', label: 'Property Address', placeholder: 'e.g. 123 Main St, Apt 4B' },
+                { name: 'situation', label: 'Violation Details', placeholder: 'Describe the issue (e.g. lack of heat, mold, noise)...' },
+                { name: 'remedy_period', label: 'Requested Remedy Period', placeholder: 'e.g. 7 days' }
+            ],
+            employment_negotiation: [
+                { name: 'employer_name', label: 'Employer / Manager Name', placeholder: 'e.g. Jane Doe' },
+                { name: 'company_name', label: 'Company Name', placeholder: 'e.g. Tech Corp' },
+                { name: 'position', label: 'Your Position', placeholder: 'e.g. Senior Developer' },
+                { name: 'concerns', label: 'Terms to Negotiate', placeholder: 'Describe the terms you want to change (e.g. salary, remote work)...' }
+            ],
+            service_cancellation: [
+                { name: 'service_provider', label: 'Service Provider', placeholder: 'e.g. Internet Co.' },
+                { name: 'account_number', label: 'Account Number', placeholder: 'e.g. ACC-55555' },
+                { name: 'cancellation_date', label: 'Desired Cancellation Date', placeholder: 'e.g. Immediately' },
+                { name: 'reason', label: 'Reason', placeholder: 'e.g. Service quality, moving...' }
+            ],
+            other_dispute: [
+                { name: 'recipient_name', label: 'Recipient Name', placeholder: 'Who is this letter for?' },
+                { name: 'recipient_company', label: 'Recipient Company', placeholder: 'Company Name (if applicable)' },
+                { name: 'dispute_details', label: 'Dispute Details / Email Content', placeholder: 'Paste the email content or describe the situation in detail here...', type: 'textarea' }
+            ]
         };
         return fields[templateId] || [];
     };
@@ -131,14 +160,17 @@ export function LetterGenerator() {
                 <div className="form-section">
                     <h3>1. Select Letter Type</h3>
                     <div className="template-grid">
-                        {templates.map((template) => (
+                        {TEMPLATES.map((template) => (
                             <div
                                 key={template.id}
                                 className={`template-card ${selectedTemplate === template.id ? 'selected' : ''}`}
-                                onClick={() => setSelectedTemplate(template.id)}
+                                onClick={() => {
+                                    setSelectedTemplate(template.id);
+                                    setCustomData({}); // Reset custom data on change
+                                }}
                             >
+                                <div className="template-icon">{template.icon}</div>
                                 <h4>{template.name}</h4>
-                                <p>{template.subject}</p>
                             </div>
                         ))}
                     </div>
@@ -184,14 +216,24 @@ export function LetterGenerator() {
                             <h3>3. Letter Details</h3>
                             <div className="form-grid">
                                 {getTemplateFields(selectedTemplate).map((field) => (
-                                    <div key={field} className="form-group">
-                                        <label>{field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</label>
-                                        <input
-                                            type="text"
-                                            value={customData[field] || ''}
-                                            onChange={(e) => setCustomData({ ...customData, [field]: e.target.value })}
-                                            placeholder={`Enter ${field.replace(/_/g, ' ')}`}
-                                        />
+                                    <div key={field.name} className="form-group" style={field.type === 'textarea' ? { gridColumn: '1 / -1' } : {}}>
+                                        <label>{field.label}</label>
+                                        {field.type === 'textarea' ? (
+                                            <textarea
+                                                value={customData[field.name] || ''}
+                                                onChange={(e) => setCustomData({ ...customData, [field.name]: e.target.value })}
+                                                placeholder={field.placeholder}
+                                                required
+                                            />
+                                        ) : (
+                                            <input
+                                                type="text"
+                                                value={customData[field.name] || ''}
+                                                onChange={(e) => setCustomData({ ...customData, [field.name]: e.target.value })}
+                                                placeholder={field.placeholder}
+                                                required
+                                            />
+                                        )}
                                     </div>
                                 ))}
                             </div>
