@@ -1,0 +1,454 @@
+{
+    "payout_limit": {
+        "positive": [
+            "The maximum payable amount is R20 000.",
+            "Coverage is limited to R10,000.",
+            "Claims are capped at R5000."
+        ],
+        "negative": [
+            "This policy intends to be fair and transparent.",
+            "We will pay the full replacement value."
+        ]
+    },
+    "reporting_window": {
+        "positive": [
+            "You must report the incident to the police within 24 hours.",
+            "Failure to report within 30 days will result in rejection."
+        ],
+        "negative": [
+            "Please let us know as soon as possible."
+        ]
+    },
+    "excess": {
+        "positive": [
+            "An excess of R5000 applies to all claims.",
+            "You are liable for the first amount payable."
+        ],
+        "negative": [
+            "No excess applies to this benefit."
+        ]
+    },
+    "unattended_property": {
+        "positive": [
+            "Loss from an unattended vehicle is not covered.",
+            "If property is left unattended, cover ceases."
+        ],
+        "negative": [
+            "Property in a locked building is covered."
+        ]
+    },
+    "electrical_damage": {
+        "positive": [
+            "Damage caused by power surge is excluded.",
+            "We do not cover electrical breakdown."
+        ],
+        "negative": [
+            "Fire damage is covered."
+        ]
+    },
+    "wear_and_tear": {
+        "positive": [
+            "We do not cover wear and tear.",
+            "Gradual deterioration is excluded."
+        ],
+        "negative": [
+            "Sudden and unforeseen damage."
+        ]
+    },
+    "acts_of_god": {
+        "positive": [
+            "Acts of God are not covered.",
+            "Force majeure events are excluded."
+        ],
+        "negative": [
+            "Storm damage is covered."
+        ]
+    },
+    "specified_items": {
+        "positive": [
+            "Items over R2000 must be specified.",
+            "Unspecified items are limited to R1000."
+        ],
+        "negative": [
+            "All household contents are covered."
+        ]
+    },
+    "automatic_renewal": {
+        "positive": [
+            "This policy will automatically renew.",
+            "Continuation of cover is automatic."
+        ],
+        "negative": [
+            "The policy expires on 31 December."
+        ]
+    },
+    "maintenance_obligation": {
+        "positive": [
+            "You must take all reasonable steps to prevent loss.",
+            "Failure to maintain in good condition."
+        ],
+        "negative": [
+            "We cover accidental damage."
+        ]
+    },
+    "security_requirements": {
+        "positive": [
+            "The alarm must be activated when leaving.",
+            "Security gates must be locked."
+        ],
+        "negative": [
+            "Standard security is sufficient."
+        ]
+    },
+    "false_statement_voids": {
+        "positive": [
+            "Any false or misleading statement voids the policy.",
+            "Non-disclosure of material facts."
+        ],
+        "negative": [
+            "Please provide accurate information."
+        ]
+    },
+    "arbitration_clause": {
+        "positive": [
+            "Disputes must be referred to arbitration.",
+            "Mediation is required before legal action."
+        ],
+        "negative": [
+            "You may take legal action."
+        ]
+    },
+    "cancellation_penalty": {
+        "positive": [
+            "A cancellation fee applies.",
+            "Early termination penalty."
+        ],
+        "negative": [
+            "You may cancel at any time."
+        ]
+    },
+    "subrogation": {
+        "positive": [
+            "We reserve rights of recovery.",
+            "We may sue in your name."
+        ],
+        "negative": [
+            "You retain all rights."
+        ]
+    },
+    "depreciation": {
+        "positive": [
+            "Claims are subject to depreciation.",
+            "We pay market value."
+        ],
+        "negative": [
+            "New for old replacement."
+        ]
+    },
+    "exclusions_general": {
+        "positive": [
+            "The following are not covered.",
+            "General exclusions apply."
+        ],
+        "negative": [
+            "This policy covers..."
+        ]
+    },
+    "consequential_loss": {
+        "positive": [
+            "Consequential loss is excluded.",
+            "We do not cover loss of profit."
+        ],
+        "negative": [
+            "Direct damage is covered."
+        ]
+    },
+    "average_clause": {
+        "positive": [
+            "The condition of average applies.",
+            "Under-insurance will reduce the claim."
+        ],
+        "negative": [
+            "We pay the full sum insured."
+        ]
+    },
+    "premium_increase": {
+        "positive": [
+            "We reserve the right to increase premiums.",
+            "Premiums are subject to review."
+        ],
+        "negative": [
+            "Fixed premium for 12 months."
+        ]
+    },
+    "waiting_period": {
+        "positive": [
+            "A waiting period of 3 months applies.",
+            "No claims within the first 30 days."
+        ],
+        "negative": [
+            "Immediate cover."
+        ]
+    },
+    "territorial_limits": {
+        "positive": [
+            "Cover is limited to within the borders of SA.",
+            "Territorial limits apply."
+        ],
+        "negative": [
+            "Worldwide cover."
+        ]
+    },
+    "keys_locks": {
+        "positive": [
+            "Replacement of locks is limited to R2000.",
+            "Lost keys limit."
+        ],
+        "negative": [
+            "Full cover for keys."
+        ]
+    },
+    "glass_breakage": {
+        "positive": [
+            "Glass breakage excess applies.",
+            "Windscreen cover is limited."
+        ],
+        "negative": [
+            "Full glass cover."
+        ]
+    },
+    "water_damage": {
+        "positive": [
+            "Water damage from burst pipes only.",
+            "Flooding is excluded."
+        ],
+        "negative": [
+            "Storm damage."
+        ]
+    },
+    "subsidence": {
+        "positive": [
+            "Subsidence and landslip are excluded.",
+            "Damage from ground movement."
+        ],
+        "negative": [
+            "Standard building cover."
+        ]
+    },
+    "riot_strike": {
+        "positive": [
+            "Riot and strike are excluded.",
+            "SASRIA cover is required."
+        ],
+        "negative": [
+            "Civil unrest is covered."
+        ]
+    },
+    "business_use": {
+        "positive": [
+            "Business use is excluded.",
+            "Not for commercial purposes."
+        ],
+        "negative": [
+            "Personal use only."
+        ]
+    },
+    "unoccupied_residence": {
+        "positive": [
+            "If the home is unoccupied for 60 days.",
+            "Vacant property exclusion."
+        ],
+        "negative": [
+            "Occupied home."
+        ]
+    },
+    "tenants": {
+        "positive": [
+            "Damage by tenants is not covered.",
+            "Sub-letting requires approval."
+        ],
+        "negative": [
+            "Owner occupied."
+        ]
+    },
+    "matching_sets": {
+        "positive": [
+            "We do not cover matching sets.",
+            "Pairs and suites limit."
+        ],
+        "negative": [
+            "Full set replacement."
+        ]
+    },
+    "accidental_damage": {
+        "positive": [
+            "Accidental damage is optional.",
+            "Breakage of fragile items."
+        ],
+        "negative": [
+            "Standard perils."
+        ]
+    },
+    "mechanical_breakdown": {
+        "positive": [
+            "Mechanical breakdown is excluded.",
+            "Failure of motors."
+        ],
+        "negative": [
+            "Fire damage."
+        ]
+    },
+    "pest_infestation": {
+        "positive": [
+            "Damage by vermin or insects.",
+            "Termites are not covered."
+        ],
+        "negative": [
+            "Sudden damage."
+        ]
+    },
+    "defective_workmanship": {
+        "positive": [
+            "Defective workmanship is excluded.",
+            "Poor design or construction."
+        ],
+        "negative": [
+            "Standard construction."
+        ]
+    },
+    "pollution": {
+        "positive": [
+            "Pollution and contamination excluded.",
+            "Hazardous waste."
+        ],
+        "negative": [
+            "Clean up costs."
+        ]
+    },
+    "nuclear_war": {
+        "positive": [
+            "War and nuclear risks are excluded.",
+            "Radiation damage."
+        ],
+        "negative": [
+            "Standard risks."
+        ]
+    },
+    "cyber_risk": {
+        "positive": [
+            "Cyber risks are excluded.",
+            "Loss of data due to virus."
+        ],
+        "negative": [
+            "Physical damage."
+        ]
+    },
+    "illegal_activities": {
+        "positive": [
+            "Illegal activities are not covered.",
+            "Criminal acts by insured."
+        ],
+        "negative": [
+            "Lawful use."
+        ]
+    },
+    "confiscation": {
+        "positive": [
+            "Confiscation by authorities.",
+            "Seizure by police."
+        ],
+        "negative": [
+            "Theft."
+        ]
+    },
+    "proof_of_ownership": {
+        "positive": [
+            "Proof of ownership required.",
+            "Provide receipts for claims."
+        ],
+        "negative": [
+            "We trust you."
+        ]
+    },
+    "salvage": {
+        "positive": [
+            "We retain rights to salvage.",
+            "Ownership of damaged items."
+        ],
+        "negative": [
+            "You keep the items."
+        ]
+    },
+    "claims_history": {
+        "positive": [
+            "Claims affect your no claims bonus.",
+            "Premium adjustment based on claims."
+        ],
+        "negative": [
+            "Fixed premium."
+        ]
+    },
+    "driver_restrictions": {
+        "positive": [
+            "Cover restricted to nominated drivers.",
+            "Regular driver must be listed."
+        ],
+        "negative": [
+            "Any driver."
+        ]
+    },
+    "vehicle_use": {
+        "positive": [
+            "Private use only.",
+            "Business use excluded."
+        ],
+        "negative": [
+            "Any use."
+        ]
+    },
+    "roadworthiness": {
+        "positive": [
+            "Vehicle must be roadworthy.",
+            "Tyres must be in good condition."
+        ],
+        "negative": [
+            "Any condition."
+        ]
+    },
+    "alcohol_drugs": {
+        "positive": [
+            "Driving under the influence of alcohol.",
+            "Drugs exclusion."
+        ],
+        "negative": [
+            "Sober driver."
+        ]
+    },
+    "unlicensed_driving": {
+        "positive": [
+            "Driver must have a valid licence.",
+            "Unlicensed driving excluded."
+        ],
+        "negative": [
+            "Licensed driver."
+        ]
+    },
+    "modification": {
+        "positive": [
+            "Vehicle modifications must be declared.",
+            "Performance accessories."
+        ],
+        "negative": [
+            "Standard vehicle."
+        ]
+    },
+    "tracking_device": {
+        "positive": [
+            "Tracking device required.",
+            "Satellite tracking must be active."
+        ],
+        "negative": [
+            "No tracker needed."
+        ]
+    }
+}

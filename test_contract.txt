@@ -1,0 +1,33 @@
+Sample Insurance Contract
+
+POLICY NUMBER: INS-2024-12345
+COVERAGE AMOUNT: R50,000 per claim
+DEDUCTIBLE: R2,500 applies to all claims
+
+IMPORTANT TERMS AND CONDITIONS:
+
+1. REPORTING REQUIREMENTS
+   All incidents must be reported to the police within 24 hours of occurrence.
+   Failure to report within this timeframe may result in claim denial.
+
+2. COVERAGE LIMITS
+   The maximum payable amount is R50,000 per claim.
+   Annual aggregate limit: R200,000
+
+3. EXCLUSIONS
+   - Pre-existing conditions are not covered
+   - Claims arising from illegal activities are excluded
+   - Damage caused by intentional acts is not covered
+
+4. PREMIUM PAYMENT
+   Monthly premium: R450
+   Premium must be paid by the 1st of each month
+   Grace period: 7 days
+   Policy will lapse if premium is not received within grace period
+
+5. CLAIM PROCESS
+   Submit claim within 30 days of incident
+   Provide all required documentation
+   Claims processed within 14 business days
+
+This is a legally binding contract. Please read all terms carefully.

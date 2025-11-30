@@ -1,0 +1,758 @@
+{
+    "insurance": {
+        "payout_limit": {
+            "title": "Hidden payout limit",
+            "patterns": [
+                "maximum(?:\\s+payable)?(?:\\s+amount)?\\s+(?:is|shall not exceed)\\s+R?\\s?\\d[\\d\\s,]*",
+                "limit(?:ed)?\\s+to\\s+R?\\s?\\d[\\d\\s,]*",
+                "capped\\s+at\\s+R?\\s?\\d[\\d\\s,]*"
+            ],
+            "explanation": "You may insure for more, but the insurer will only reimburse up to the maximum listed.",
+            "default_severity": 85,
+            "category": "coverage",
+            "metadata": {
+                "why": "Insurers often cap item payouts even when users enter higher values.",
+                "suggested_action": "Confirm item category payout limits with insurer."
+            }
+        },
+        "reporting_window": {
+            "title": "Strict reporting window",
+            "patterns": [
+                "report(?:ed)?\\s+(?:to\\s+(?:police|us)|in\\s+writing)\\s+within\\s+\\d+\\s+(?:hours|days)",
+                "notify\\s+us\\s+within\\s+\\d+\\s+(?:hours|days)",
+                "failure\\s+to\\s+report\\s+within",
+                "(?:police|authorities)\\s+within\\s+\\d+"
+            ],
+            "explanation": "Failure to report an incident within the specified time window can void your claim.",
+            "default_severity": 80,
+            "category": "reporting",
+            "metadata": {
+                "why": "Late reporting is a common reason for claim rejection.",
+                "suggested_action": "Note the reporting deadline and act immediately after an incident."
+            }
+        },
+        "excess": {
+            "title": "High or additional excess",
+            "patterns": [
+                "excess\\s+of\\s+R?\\s?\\d[\\d\\s,]*",
+                "additional\\s+excess",
+                "first\\s+amount\\s+payable"
+            ],
+            "explanation": "You are responsible for this amount before the insurer pays anything.",
+            "default_severity": 60,
+            "category": "cost",
+            "metadata": {
+                "why": "Excess amounts can be higher than expected, especially for specific items.",
+                "suggested_action": "Ensure you can afford the excess amount."
+            }
+        },
+        "unattended_property": {
+            "title": "Unattended property exclusion",
+            "patterns": [
+                "left\\s+unattended",
+                "unattended\\s+vehicle",
+                "visible\\s+from\\s+the\\s+outside"
+            ],
+            "explanation": "Theft from unattended vehicles or property is often excluded unless specific conditions are met (e.g., locked in boot).",
+            "default_severity": 75,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Common exclusion for theft claims.",
+                "suggested_action": "Never leave items visible in an unattended vehicle."
+            }
+        },
+        "electrical_damage": {
+            "title": "Electrical damage exclusion",
+            "patterns": [
+                "power\\s+surge",
+                "electrical\\s+breakdown",
+                "short\\s+circuit"
+            ],
+            "explanation": "Damage caused by power surges or electrical faults may be excluded or require specific protection.",
+            "default_severity": 70,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Load shedding and grid instability make this a high-risk area.",
+                "suggested_action": "Check if power surge cover is included or optional."
+            }
+        },
+        "wear_and_tear": {
+            "title": "Wear and tear exclusion",
+            "patterns": [
+                "wear\\s+and\\s+tear",
+                "gradual\\s+deterioration",
+                "rust",
+                "corrosion"
+            ],
+            "explanation": "Damage due to aging or lack of maintenance is not covered.",
+            "default_severity": 50,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Insurance covers sudden events, not maintenance issues.",
+                "suggested_action": "Maintain your property regularly."
+            }
+        },
+        "acts_of_god": {
+            "title": "Acts of God / Force Majeure",
+            "patterns": [
+                "act(?:s)?\\s+of\\s+god",
+                "force\\s+majeure",
+                "natural\\s+disaster"
+            ],
+            "explanation": "Certain natural events may be excluded or have limited cover.",
+            "default_severity": 65,
+            "category": "coverage",
+            "metadata": {
+                "why": "Catastrophic events can be excluded.",
+                "suggested_action": "Check specific natural peril coverage (flood, earthquake)."
+            }
+        },
+        "specified_items": {
+            "title": "Unspecified items limit",
+            "patterns": [
+                "must\\s+be\\s+specified",
+                "unspecified\\s+items",
+                "valuables\\s+limit"
+            ],
+            "explanation": "High-value items must be listed individually to be fully covered.",
+            "default_severity": 70,
+            "category": "coverage",
+            "metadata": {
+                "why": "General contents cover has a per-item limit.",
+                "suggested_action": "Specify high-value items like jewelry and electronics."
+            }
+        },
+        "automatic_renewal": {
+            "title": "Automatic renewal",
+            "patterns": [
+                "automatically\\s+renew",
+                "renewal\\s+date",
+                "continuation\\s+of\\s+cover"
+            ],
+            "explanation": "The policy may renew automatically unless you cancel it.",
+            "default_severity": 40,
+            "category": "admin",
+            "metadata": {
+                "why": "You might be charged for another year if you forget to cancel.",
+                "suggested_action": "Set a reminder for the renewal date."
+            }
+        },
+        "maintenance_obligation": {
+            "title": "Maintenance obligation",
+            "patterns": [
+                "take\\s+all\\s+reasonable\\s+steps",
+                "maintain\\s+in\\s+good\\s+condition",
+                "duty\\s+of\\s+care"
+            ],
+            "explanation": "You must maintain your property; negligence can void claims.",
+            "default_severity": 60,
+            "category": "obligation",
+            "metadata": {
+                "why": "Insurers require you to prevent loss.",
+                "suggested_action": "Keep proof of maintenance."
+            }
+        },
+        "security_requirements": {
+            "title": "Security requirements",
+            "patterns": [
+                "alarm\\s+must\\s+be\\s+activated",
+                "security\\s+gates",
+                "burglar\\s+bars"
+            ],
+            "explanation": "Theft cover often depends on specific security measures being active.",
+            "default_severity": 85,
+            "category": "obligation",
+            "metadata": {
+                "why": "If the alarm wasn't on, the claim might be rejected.",
+                "suggested_action": "Ensure all security devices are functional and used."
+            }
+        },
+        "false_statement_voids": {
+            "title": "False statement voids policy",
+            "patterns": [
+                "false\\s+or\\s+misleading",
+                "misrepresentation",
+                "non-disclosure"
+            ],
+            "explanation": "Any false information provided can void the entire policy.",
+            "default_severity": 90,
+            "category": "legal",
+            "metadata": {
+                "why": "Honesty is essential for valid cover.",
+                "suggested_action": "Double-check all information provided."
+            }
+        },
+        "arbitration_clause": {
+            "title": "Arbitration clause",
+            "patterns": [
+                "arbitration",
+                "dispute\\s+resolution",
+                "mediat(?:or|ion)"
+            ],
+            "explanation": "Disputes may need to be settled via arbitration rather than court.",
+            "default_severity": 50,
+            "category": "legal",
+            "metadata": {
+                "why": "Can limit your legal options.",
+                "suggested_action": "Understand the dispute resolution process."
+            }
+        },
+        "cancellation_penalty": {
+            "title": "Cancellation penalty",
+            "patterns": [
+                "cancellation\\s+fee",
+                "early\\s+termination",
+                "penalty\\s+charge"
+            ],
+            "explanation": "You may be charged a fee for cancelling the policy early.",
+            "default_severity": 55,
+            "category": "cost",
+            "metadata": {
+                "why": "Discourages switching insurers.",
+                "suggested_action": "Check cancellation terms before signing."
+            }
+        },
+        "subrogation": {
+            "title": "Subrogation rights",
+            "patterns": [
+                "subrogation",
+                "rights\\s+of\\s+recovery",
+                "sue\\s+in\\s+your\\s+name"
+            ],
+            "explanation": "The insurer can pursue third parties for recovery in your name.",
+            "default_severity": 40,
+            "category": "legal",
+            "metadata": {
+                "why": "Standard practice, but good to know.",
+                "suggested_action": "Cooperate with the insurer in recovery actions."
+            }
+        },
+        "depreciation": {
+            "title": "Depreciation / Betterment",
+            "patterns": [
+                "depreciation",
+                "betterment",
+                "market\\s+value"
+            ],
+            "explanation": "Payouts may be reduced based on the age and condition of the item.",
+            "default_severity": 65,
+            "category": "coverage",
+            "metadata": {
+                "why": "You might not get 'new for old' replacement.",
+                "suggested_action": "Check if cover is replacement value or market value."
+            }
+        },
+        "exclusions_general": {
+            "title": "General exclusions",
+            "patterns": [
+                "not\\s+covered",
+                "exclude",
+                "exception",
+                "(?:general|standard)\\s+exclusions"
+            ],
+            "explanation": "Pay attention to the list of general exclusions.",
+            "default_severity": 60,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Defines what is definitely not covered.",
+                "suggested_action": "Read the exclusions section carefully."
+            }
+        },
+        "consequential_loss": {
+            "title": "Consequential loss exclusion",
+            "patterns": [
+                "consequential\\s+loss",
+                "indirect\\s+loss",
+                "loss\\s+of\\s+profit"
+            ],
+            "explanation": "Indirect losses resulting from an insured event are not covered.",
+            "default_severity": 55,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Insurance covers direct damage, not side effects.",
+                "suggested_action": "Consider business interruption cover if relevant."
+            }
+        },
+        "average_clause": {
+            "title": "Average clause (Underinsurance)",
+            "patterns": [
+                "average\\s+clause",
+                "condition\\s+of\\s+average",
+                "under-insurance"
+            ],
+            "explanation": "If you are underinsured, claims will be reduced proportionally.",
+            "default_severity": 90,
+            "category": "coverage",
+            "metadata": {
+                "why": "Severe penalty for underestimating value.",
+                "suggested_action": "Ensure sum insured represents full replacement value."
+            }
+        },
+        "premium_increase": {
+            "title": "Premium increase rights",
+            "patterns": [
+                "adjust\\s+premium",
+                "increase\\s+premium",
+                "premiums?.*(?:subject\\s+to|review)",
+                "(?:subject\\s+to|review).*premiums?"
+            ],
+            "explanation": "The insurer reserves the right to increase premiums.",
+            "default_severity": 45,
+            "category": "cost",
+            "metadata": {
+                "why": "Premiums aren't fixed forever.",
+                "suggested_action": "Budget for potential increases."
+            }
+        },
+        "waiting_period": {
+            "title": "Waiting period",
+            "patterns": [
+                "waiting\\s+period",
+                "no\\s+claims\\s+within",
+                "start\\s+date"
+            ],
+            "explanation": "You cannot claim for events happening shortly after the policy starts.",
+            "default_severity": 70,
+            "category": "coverage",
+            "metadata": {
+                "why": "Prevents signing up only when a loss is imminent.",
+                "suggested_action": "Be aware of when full cover kicks in."
+            }
+        },
+        "territorial_limits": {
+            "title": "Territorial limits",
+            "patterns": [
+                "territorial\\s+limits",
+                "within\\s+the\\s+borders",
+                "outside\\s+the\\s+country"
+            ],
+            "explanation": "Cover is limited to specific geographic areas.",
+            "default_severity": 60,
+            "category": "coverage",
+            "metadata": {
+                "why": "Taking items abroad might require extra cover.",
+                "suggested_action": "Check travel insurance for items taken overseas."
+            }
+        },
+        "keys_locks": {
+            "title": "Keys and locks limit",
+            "patterns": [
+                "replacement\\s+of\\s+locks",
+                "lost\\s+keys",
+                "keys\\s+limit"
+            ],
+            "explanation": "Cover for replacing locks and keys is often limited.",
+            "default_severity": 50,
+            "category": "coverage",
+            "metadata": {
+                "why": "Can be expensive to replace all locks.",
+                "suggested_action": "Check the specific limit for keys."
+            }
+        },
+        "glass_breakage": {
+            "title": "Glass breakage",
+            "patterns": [
+                "glass\\s+breakage",
+                "windows",
+                "windscreen"
+            ],
+            "explanation": "Glass coverage might have specific excesses or limits.",
+            "default_severity": 45,
+            "category": "coverage",
+            "metadata": {
+                "why": "Common claim type.",
+                "suggested_action": "Check if glass claims affect no-claims bonus."
+            }
+        },
+        "water_damage": {
+            "title": "Water damage restrictions",
+            "patterns": [
+                "water\\s+damage",
+                "burst\\s+pipes",
+                "flood(?:ing)?"
+            ],
+            "explanation": "Water damage might be excluded if due to maintenance issues.",
+            "default_severity": 65,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Gradual leaks are maintenance, not insurance.",
+                "suggested_action": "Maintain plumbing regularly."
+            }
+        },
+        "subsidence": {
+            "title": "Subsidence and landslip",
+            "patterns": [
+                "subsidence",
+                "landslip",
+                "ground\\s+movement"
+            ],
+            "explanation": "Damage from ground movement is often excluded or optional.",
+            "default_severity": 75,
+            "category": "exclusion",
+            "metadata": {
+                "why": "High-risk structural damage.",
+                "suggested_action": "Check if your area is prone to subsidence."
+            }
+        },
+        "riot_strike": {
+            "title": "Riot and strike (SASRIA)",
+            "patterns": [
+                "riot",
+                "strike",
+                "civil\\s+commotion",
+                "sasria"
+            ],
+            "explanation": "Political violence is usually covered by SASRIA in South Africa.",
+            "default_severity": 60,
+            "category": "coverage",
+            "metadata": {
+                "why": "Standard insurers exclude this.",
+                "suggested_action": "Ensure SASRIA cover is included."
+            }
+        },
+        "business_use": {
+            "title": "Business use exclusion",
+            "patterns": [
+                "business\\s+use",
+                "commercial\\s+purposes",
+                "trade"
+            ],
+            "explanation": "Personal policies often exclude items used for business.",
+            "default_severity": 70,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Business risks differ from personal risks.",
+                "suggested_action": "Declare business use of vehicles or equipment."
+            }
+        },
+        "unoccupied_residence": {
+            "title": "Unoccupied residence",
+            "patterns": [
+                "unoccupied",
+                "vacant",
+                "60\\s+days"
+            ],
+            "explanation": "Cover may cease if the home is unoccupied for a long period.",
+            "default_severity": 80,
+            "category": "coverage",
+            "metadata": {
+                "why": "Empty homes are high risk.",
+                "suggested_action": "Notify insurer if away for extended periods."
+            }
+        },
+        "tenants": {
+            "title": "Tenant behavior",
+            "patterns": [
+                "tenant",
+                "letting",
+                "sub-letting"
+            ],
+            "explanation": "Landlord policies might exclude malicious damage by tenants.",
+            "default_severity": 65,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Tenant vetting is the owner's responsibility.",
+                "suggested_action": "Check landlord specific inclusions."
+            }
+        },
+        "matching_sets": {
+            "title": "Matching sets and pairs",
+            "patterns": [
+                "matching\\s+set",
+                "pair",
+                "suite"
+            ],
+            "explanation": "If one item of a set is lost, the insurer might not replace the whole set.",
+            "default_severity": 50,
+            "category": "coverage",
+            "metadata": {
+                "why": "They only pay for the lost item.",
+                "suggested_action": "Be aware of mismatched sets after a claim."
+            }
+        },
+        "accidental_damage": {
+            "title": "Accidental damage",
+            "patterns": [
+                "accidental\\s+damage",
+                "breakage"
+            ],
+            "explanation": "Accidental damage (dropping things) is often an optional add-on.",
+            "default_severity": 55,
+            "category": "coverage",
+            "metadata": {
+                "why": "Standard cover is for specific events (fire, theft).",
+                "suggested_action": "Add accidental damage for expensive electronics."
+            }
+        },
+        "mechanical_breakdown": {
+            "title": "Mechanical breakdown",
+            "patterns": [
+                "mechanical",
+                "breakdown",
+                "failure"
+            ],
+            "explanation": "Internal failure of machines is not covered (warranties cover this).",
+            "default_severity": 50,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Insurance is for external events.",
+                "suggested_action": "Rely on warranties for breakdown."
+            }
+        },
+        "pest_infestation": {
+            "title": "Pest infestation",
+            "patterns": [
+                "vermin",
+                "insects",
+                "pests",
+                "termites"
+            ],
+            "explanation": "Damage by pests is typically excluded.",
+            "default_severity": 55,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Considered a maintenance issue.",
+                "suggested_action": "Pest control is your responsibility."
+            }
+        },
+        "defective_workmanship": {
+            "title": "Defective workmanship",
+            "patterns": [
+                "defective\\s+workmanship",
+                "poor\\s+(?:workmanship|design|construction)",
+                "faulty\\s+construction"
+            ],
+            "explanation": "Damage caused by bad building or repair work is not covered.",
+            "default_severity": 60,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Insurer doesn't guarantee contractors' quality.",
+                "suggested_action": "Use reputable contractors."
+            }
+        },
+        "pollution": {
+            "title": "Pollution and contamination",
+            "patterns": [
+                "pollution",
+                "contamination",
+                "hazardous"
+            ],
+            "explanation": "Cleanup costs for pollution are often excluded.",
+            "default_severity": 50,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Environmental liability is specialized.",
+                "suggested_action": "Check if you have specific risks here."
+            }
+        },
+        "nuclear_war": {
+            "title": "War and nuclear risks",
+            "patterns": [
+                "war",
+                "nuclear",
+                "radiation",
+                "terrorism"
+            ],
+            "explanation": "Standard exclusion for war and nuclear events.",
+            "default_severity": 40,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Global catastrophes are uninsurable by standard means.",
+                "suggested_action": "Standard exclusion everywhere."
+            }
+        },
+        "cyber_risk": {
+            "title": "Cyber risk exclusion",
+            "patterns": [
+                "cyber",
+                "data",
+                "virus",
+                "hacking"
+            ],
+            "explanation": "Loss of data or cyber attacks are often excluded from property policies.",
+            "default_severity": 60,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Requires specialized cyber insurance.",
+                "suggested_action": "Back up data regularly."
+            }
+        },
+        "illegal_activities": {
+            "title": "Illegal activities",
+            "patterns": [
+                "illegal",
+                "unlawful",
+                "criminal"
+            ],
+            "explanation": "Losses connected to illegal acts by the insured are not covered.",
+            "default_severity": 90,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Public policy prevents insuring crime.",
+                "suggested_action": "Don't do illegal things."
+            }
+        },
+        "confiscation": {
+            "title": "Confiscation by authorities",
+            "patterns": [
+                "confiscation",
+                "seizure",
+                "detention"
+            ],
+            "explanation": "Legal seizure of property is not covered.",
+            "default_severity": 50,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Legal process is not an insurable risk.",
+                "suggested_action": "Comply with laws."
+            }
+        },
+        "proof_of_ownership": {
+            "title": "Proof of ownership",
+            "patterns": [
+                "proof\\s+of\\s+ownership",
+                "receipts",
+                "valuation"
+            ],
+            "explanation": "You must prove you owned the items claimed for.",
+            "default_severity": 70,
+            "category": "obligation",
+            "metadata": {
+                "why": "Prevents fraudulent claims.",
+                "suggested_action": "Keep receipts and photos of valuables."
+            }
+        },
+        "salvage": {
+            "title": "Rights to salvage",
+            "patterns": [
+                "salvage",
+                "ownership\\s+of\\s+damaged"
+            ],
+            "explanation": "If the insurer pays out for an item, they own the damaged remains.",
+            "default_severity": 40,
+            "category": "legal",
+            "metadata": {
+                "why": "Prevents you profiting from the loss.",
+                "suggested_action": "Don't dispose of damaged items until authorized."
+            }
+        },
+        "claims_history": {
+            "title": "Claims history impact",
+            "patterns": [
+                "no\\s+claims\\s+bonus",
+                "claim\\s+free\\s+group",
+                "premium\\s+adjustment"
+            ],
+            "explanation": "Claiming affects your future premiums and bonuses.",
+            "default_severity": 50,
+            "category": "cost",
+            "metadata": {
+                "why": "Insurance works on risk profiling.",
+                "suggested_action": "Consider not claiming for small amounts."
+            }
+        },
+        "driver_restrictions": {
+            "title": "Driver restrictions",
+            "patterns": [
+                "nominated\\s+driver",
+                "regular\\s+driver",
+                "licensed"
+            ],
+            "explanation": "Vehicle cover might be limited to specific drivers.",
+            "default_severity": 85,
+            "category": "coverage",
+            "metadata": {
+                "why": "Risk is based on the driver.",
+                "suggested_action": "Ensure all drivers are nominated."
+            }
+        },
+        "vehicle_use": {
+            "title": "Vehicle use description",
+            "patterns": [
+                "private\\s+use",
+                "business\\s+use",
+                "hire"
+            ],
+            "explanation": "Using the vehicle for the wrong purpose (e.g., delivery) voids cover.",
+            "default_severity": 85,
+            "category": "coverage",
+            "metadata": {
+                "why": "Delivery/taxi use is higher risk.",
+                "suggested_action": "Be honest about vehicle use."
+            }
+        },
+        "roadworthiness": {
+            "title": "Roadworthiness",
+            "patterns": [
+                "roadworthy",
+                "good\\s+condition",
+                "tyres"
+            ],
+            "explanation": "The vehicle must be roadworthy for the claim to be valid.",
+            "default_severity": 80,
+            "category": "obligation",
+            "metadata": {
+                "why": "Unsafe cars cause accidents.",
+                "suggested_action": "Check tyres and brakes."
+            }
+        },
+        "alcohol_drugs": {
+            "title": "Alcohol and drugs",
+            "patterns": [
+                "alcohol",
+                "drugs",
+                "under\\s+the\\s+influence"
+            ],
+            "explanation": "No cover if the driver was under the influence.",
+            "default_severity": 95,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Illegal and high risk.",
+                "suggested_action": "Don't drink and drive."
+            }
+        },
+        "unlicensed_driving": {
+            "title": "Unlicensed driving",
+            "patterns": [
+                "valid\\s+licence",
+                "unlicensed"
+            ],
+            "explanation": "Driver must have a valid licence.",
+            "default_severity": 95,
+            "category": "exclusion",
+            "metadata": {
+                "why": "Illegal.",
+                "suggested_action": "Renew your licence."
+            }
+        },
+        "modification": {
+            "title": "Vehicle modifications",
+            "patterns": [
+                "modification",
+                "accessories",
+                "performance"
+            ],
+            "explanation": "Modifications must be declared or they aren't covered.",
+            "default_severity": 60,
+            "category": "coverage",
+            "metadata": {
+                "why": "Changes value and risk.",
+                "suggested_action": "Tell insurer about any mods."
+            }
+        },
+        "tracking_device": {
+            "title": "Tracking device requirement",
+            "patterns": [
+                "tracking\\s+device",
+                "satellite\\s+tracking"
+            ],
+            "explanation": "Theft cover may require a working tracking device.",
+            "default_severity": 80,
+            "category": "obligation",
+            "metadata": {
+                "why": "Increases recovery chance.",
+                "suggested_action": "Test your tracker regularly."
+            }
+        }
+    }
+}

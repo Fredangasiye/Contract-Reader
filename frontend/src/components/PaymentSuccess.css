@@ -1,0 +1,89 @@
+.payment-success-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.success-card {
+    background: white;
+    border-radius: 16px;
+    padding: 3rem;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    text-align: center;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.success-card h1 {
+    margin: 0 0 1rem 0;
+    font-size: 2rem;
+    color: #1a202c;
+}
+
+.success-card>p {
+    margin: 0 0 2rem 0;
+    color: #718096;
+    font-size: 1rem;
+}
+
+.success-details {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.success-details p {
+    margin: 0 0 1rem 0;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.success-details ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.success-details li {
+    padding: 0.5rem 0;
+    color: #4a5568;
+}
+
+.success-details li::before {
+    content: '✓ ';
+    color: #48bb78;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.redirect-message {
+    color: #718096;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}

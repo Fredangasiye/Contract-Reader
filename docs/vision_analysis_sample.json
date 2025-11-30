@@ -1,0 +1,69 @@
+{
+    "id": "550e8400-e29b-41d4-a716-446655440000",
+    "full_text": "[STUB OCR OUTPUT]\\n\\nThis is a placeholder text extraction. In production, this would contain the actual \\ntext extracted from the uploaded document using Google Cloud Vision API.\\n\\nTo enable real OCR:\\n1. Set up Google Cloud Vision API credentials\\n2. Set GOOGLE_APPLICATION_CREDENTIALS environment variable\\n3. Or set GOOGLE_CLOUD_VISION_API_KEY\\n\\nDocument type: text/plain\\nBuffer size: 1.23 KB\\n\\nSample insurance contract text for testing:\\nThe maximum payable amount is R20,000 per claim.\\nYou must report incidents to the police within 24 hours.\\nAn excess of R5,000 applies to all claims.",
+    "summary": "[STUB LLM SUMMARY] This insurance contract contains approximately 89 words. It includes specific monetary amounts and limits. To enable real LLM analysis, set the OPENROUTER_API_KEY environment variable. The contract should be reviewed carefully for coverage limits, exclusions, and obligations.",
+    "flags": [
+        {
+            "id": "payout_limit",
+            "title": "Hidden payout limit",
+            "severity": 95,
+            "confidence": 1,
+            "plain_english": "You may insure for more, but the insurer will only reimburse up to the maximum listed.",
+            "evidence": "The maximum payable amount is R20,000 per claim.",
+            "page": 1,
+            "bounding_boxes": [
+                {
+                    "x": 100,
+                    "y": 200,
+                    "width": 400,
+                    "height": 50
+                }
+            ],
+            "category": "coverage",
+            "source": "rules"
+        },
+        {
+            "id": "reporting_window",
+            "title": "Strict reporting window",
+            "severity": 90,
+            "confidence": 1,
+            "plain_english": "Failure to report an incident within the specified time window can void your claim.",
+            "evidence": "You must report incidents to the police within 24 hours.",
+            "page": 1,
+            "bounding_boxes": [
+                {
+                    "x": 100,
+                    "y": 300,
+                    "width": 500,
+                    "height": 50
+                }
+            ],
+            "category": "obligation",
+            "source": "rules"
+        },
+        {
+            "id": "excess",
+            "title": "Excess/Deductible",
+            "severity": 60,
+            "confidence": 1,
+            "plain_english": "You must pay the excess amount before the insurer pays anything.",
+            "evidence": "An excess of R5,000 applies to all claims.",
+            "page": 1,
+            "bounding_boxes": [
+                {
+                    "x": 100,
+                    "y": 400,
+                    "width": 300,
+                    "height": 50
+                }
+            ],
+            "category": "cost",
+            "source": "rules"
+        }
+    ],
+    "ocr_confidence": 0.98,
+    "rules_version": "1.0.0",
+    "processing_time_ms": 1234,
+    "page_count": 1,
+    "is_stub": true
+}
