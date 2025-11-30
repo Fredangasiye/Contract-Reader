@@ -65,6 +65,18 @@ export function LoginPage() {
                     <button type="submit" className="btn-primary" disabled={loading}>
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
+
+                    <button
+                        type="button"
+                        className="btn-secondary demo-btn"
+                        onClick={() => {
+                            setEmail('demo@example.com');
+                            setPassword('password123');
+                        }}
+                        style={{ marginTop: '1rem' }}
+                    >
+                        👤 Fill Demo Credentials
+                    </button>
                 </form>
 
                 <p className="auth-footer">

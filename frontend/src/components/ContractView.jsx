@@ -118,7 +118,7 @@ function ContractView({ data, onReset }) {
                                         Generate Letter
                                     </button>
                                 ) : (
-                                    <button onClick={() => navigate('/pricing')} className="action-btn upgrade-btn">
+                                    <button onClick={() => navigate('/pricing?plan=premium')} className="action-btn upgrade-btn">
                                         Upgrade to Generate Letters
                                     </button>
                                 )}

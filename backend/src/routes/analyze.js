@@ -83,9 +83,15 @@ router.post('/', upload.single('file'), async (req, res) => {
             });
         }
 
-        // Step 1: Run rules engine
+        // Step 1: Run rules engine (auto-detect type)
         console.log('Running rules engine...');
-        let flags = await findRedFlags(fullText, 'insurance');
+        // Pass null to trigger auto-detection in findRedFlags
+        let flags = await findRedFlags(fullText, null);
+
+        // We can get the detected type by checking the rules engine or re-running detection
+        // For simplicity, let's re-detect here to send to frontend
+        const { detectContractType } = require('../services/rulesEngine');
+        const detectedType = detectContractType(fullText);
 
         // Step 2: Generate LLM summary
         console.log('Generating summary...');
@@ -119,7 +125,10 @@ router.post('/', upload.single('file'), async (req, res) => {
             llmModel: process.env.OPENROUTER_API_KEY ? 'mistral-7b' : 'stub',
             fileType,
             pageCount: pages.length,
-            processingTimeMs
+            processingTimeMs,
+            metadata: {
+                contractType: detectedType
+            }
         });
 
         // Return comprehensive response
@@ -127,6 +136,7 @@ router.post('/', upload.single('file'), async (req, res) => {
             id: storedAnalysis.id,
             full_text: fullText,
             summary,
+            contract_type: detectedType,
             flags: flags.map(f => ({
                 id: f.id,
                 title: f.title,

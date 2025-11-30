@@ -178,3 +178,26 @@
         font-size: var(--font-size-lg);
     }
 }
+
+/* Highlight animation for selected plan */
+@keyframes highlightPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.3);
+    }
+
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 20px 60px -10px rgba(124, 58, 237, 0.5);
+    }
+
+    100% {
+        transform: scale(1);
+        box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.3);
+    }
+}
+
+.pricing-card.highlight-plan {
+    animation: highlightPulse 1s ease-in-out;
+    border: 2px solid var(--color-primary-500);
+}

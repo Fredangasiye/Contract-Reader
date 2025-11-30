@@ -49,21 +49,50 @@ function scoreSeverity(match, rule) {
 }
 
 /**
+ * Detects the type of contract based on keywords in the text.
+ * @param {string} text 
+ * @returns {string} - 'lease', 'employment', 'software', 'insurance', or 'general'
+ */
+function detectContractType(text) {
+    const lowerText = text.toLowerCase().slice(0, 2000); // Check first 2000 chars
+
+    if (/(lease|tenancy|tenant|landlord|rental agreement|premises|lessor|lessee)/.test(lowerText)) {
+        return 'lease';
+    }
+    if (/(employment|employee|employer|salary|probation|termination|workplace)/.test(lowerText)) {
+        return 'employment';
+    }
+    if (/(software|license|saas|subscription|user|developer|api|platform)/.test(lowerText)) {
+        return 'software';
+    }
+    if (/(insurance|policy|coverage|premium|deductible|insurer|insured|claim)/.test(lowerText)) {
+        return 'insurance';
+    }
+
+    return 'general';
+}
+
+/**
  * Finds red flags in the text based on the rules.
  * @param {string} text 
- * @param {string} contractType 
+ * @param {string} contractType - Optional, will auto-detect if not provided
  * @param {object} options 
  * @returns {Promise<Array>}
  */
-async function findRedFlags(text, contractType = 'insurance', options = { maxFlags: 20 }) {
-    const rules = loadRules(contractType);
+async function findRedFlags(text, contractType = null, options = { maxFlags: 20 }) {
+    // Auto-detect type if not provided
+    const typeToUse = contractType || detectContractType(text);
+    console.log(`Analyzing document as type: ${typeToUse}`);
+
+    const rules = loadRules(typeToUse);
+
+    // If no specific rules found, try 'general' or fallback to empty
+    if (!rules || Object.keys(rules).length === 0) {
+        console.log(`No rules found for type ${typeToUse}, falling back to general`);
+        // You might want to load 'general' rules here if you have them
+    }
+
     const flags = [];
-    const normalizedText = normalizeText(text); // Use normalized text for matching? 
-    // Actually, regex matching on original text (or slightly cleaned) is usually better to preserve indices.
-    // But instructions say "Lowercase text for matching".
-    // Let's use the original text for extraction and a lowercased version for matching if needed, 
-    // OR just use case-insensitive regex on the original text.
-    // The instructions say: "Run each rule’s patterns using case-insensitive RegExp."
 
     for (const [ruleId, rule] of Object.entries(rules)) {
         if (flags.length >= options.maxFlags) break;
@@ -84,17 +113,8 @@ async function findRedFlags(text, contractType = 'insurance', options = { maxFla
         }
 
         if (matches.length > 0) {
-            // Consolidate matches
-            // For now, just take the first one or the one with highest severity?
-            // Instructions: "If multiple matches per rule -> return one flag, with match_index array."
-
             const bestMatch = matches[0]; // Simplification
             const severity = scoreSeverity(bestMatch, rule);
-
-            // Calculate confidence
-            // Instructions: "confidence = 1.0 for exact match..." 
-            // Since we use regex, it is an "exact match" of the pattern.
-            // Let's assume 1.0 for now unless we do fuzzy matching.
             const confidence = 1.0;
 
             if (confidence >= 0.4) {
@@ -107,7 +127,7 @@ async function findRedFlags(text, contractType = 'insurance', options = { maxFla
                     confidence: confidence,
                     plain_english: rule.explanation,
                     evidence: evidence,
-                    pattern: bestMatch[0], // The actual matched text
+                    pattern: bestMatch[0],
                     match_index: [bestMatch.index, bestMatch.index + bestMatch[0].length],
                     category: rule.category
                 });
@@ -121,5 +141,6 @@ async function findRedFlags(text, contractType = 'insurance', options = { maxFla
 module.exports = {
     loadRules,
     scoreSeverity,
-    findRedFlags
+    findRedFlags,
+    detectContractType
 };

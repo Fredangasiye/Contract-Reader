@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getPricing, createCheckout } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import './PricingPage.css';
@@ -9,12 +9,30 @@ export function PricingPage() {
     const [loading, setLoading] = useState(true);
     const [checkoutLoading, setCheckoutLoading] = useState(null);
     const formRef = useRef(null);
+    const premiumCardRef = useRef(null);
     const navigate = useNavigate();
+    const location = useLocation();
     const { user, isPremium } = useAuth();
 
     useEffect(() => {
         loadPricing();
     }, []);
+
+    useEffect(() => {
+        // Check for plan query param
+        const params = new URLSearchParams(location.search);
+        const plan = params.get('plan');
+
+        if (plan === 'premium' && premiumCardRef.current && !loading) {
+            // Scroll to premium card
+            premiumCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Add highlight effect
+            premiumCardRef.current.classList.add('highlight-plan');
+            setTimeout(() => {
+                premiumCardRef.current.classList.remove('highlight-plan');
+            }, 2000);
+        }
+    }, [location.search, loading]);
 
     const loadPricing = async () => {
         try {
@@ -121,7 +139,7 @@ export function PricingPage() {
                 </div>
 
                 {/* Premium Plan */}
-                <div className="pricing-card featured">
+                <div className="pricing-card featured" ref={premiumCardRef}>
                     <div className="badge">Most Popular</div>
                     <div className="plan-header">
                         <h2>Premium</h2>
