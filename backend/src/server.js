@@ -16,14 +16,22 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS for frontend
+// CORS and CSP
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Content-Security-Policy', "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'");
     next();
 });
 
 // Routes
+app.get('/', (req, res) => {
+    res.send('Contract Reader Backend is running');
+});
+
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
@@ -36,9 +44,51 @@ app.use('/payments', paymentsRouter);
 app.use('/letters', lettersRouter);
 app.use('/advice', adviceRouter);
 
-app.listen(port, () => {
-    console.log(`Backend listening on port ${port}`);
-    console.log(`Health check: http://localhost:${port}/health`);
-    console.log(`Analyze endpoint: http://localhost:${port}/analyze`);
-    console.log(`Admin insights: http://localhost:${port}/admin/insights`);
-});
+const { getUserByEmail, createUser } = require('./services/dataStorage');
+const bcrypt = require('bcryptjs');
+
+// Seed Demo User
+async function seedDemoUser() {
+    try {
+        const demoEmail = 'demo@example.com';
+        const existingUser = await getUserByEmail(demoEmail);
+
+        if (!existingUser) {
+            console.log('Seeding demo user...');
+            const passwordHash = await bcrypt.hash('password123', 10);
+            await createUser({
+                email: demoEmail,
+                passwordHash,
+                subscriptionTier: 'premium',
+                subscriptionExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString()
+            });
+            console.log('Demo user created successfully');
+        } else {
+            console.log('Demo user already exists, ensuring premium status...');
+            const { updateUser } = require('./services/dataStorage');
+            await updateUser(existingUser.userId, {
+                subscriptionTier: 'premium',
+                subscriptionExpiry: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+                scanCredits: 99
+            });
+            console.log('Demo user updated to premium');
+        }
+    } catch (error) {
+        console.error('Failed to seed demo user:', error);
+    }
+}
+
+// Run seed for serverless environments
+seedDemoUser();
+
+// Start server
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Backend listening on port ${port}`);
+        console.log(`Health check: http://localhost:${port}/health`);
+        console.log(`Analyze endpoint: http://localhost:${port}/analyze`);
+        console.log(`Admin insights: http://localhost:${port}/admin/insights`);
+    });
+}
+
+module.exports = app;

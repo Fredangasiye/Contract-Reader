@@ -1,0 +1,49 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "src/server.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "env": {
+        "SUPABASE_URL": "https://nzwmoewutowpkdlzzgty.supabase.co",
+        "SUPABASE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im56d21vZXd1dG93cGtkbHp6Z3R5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDUxMDUzNSwiZXhwIjoyMDgwMDg2NTM1fQ.PAyDm1YQMMSb_xZz9ctBYt0evdWzp2kGIGJpJBB4BCQ",
+        "OPENROUTER_API_KEY": "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",
+        "GOOGLE_CLOUD_VISION_API_KEY": "AIzaSyCmlDHu67Sur6rOmPmw6DpruNPIDQx1oS4",
+        "ENCRYPTION_KEY": "2c5f019c68218245fb80eb712baf29f6275b4db33399bd4786fb77a80c0973cf",
+        "JWT_SECRET": "your-super-secret-jwt-key-change-in-production-2024",
+        "PAYSTACK_SECRET_KEY": "sk_test_mock_key",
+        "BACKEND_URL": "https://backend-freds-projects-7c342310.vercel.app",
+        "FRONTEND_URL": "https://frontend-freds-projects-7c342310.vercel.app"
+    },
+    "headers": [
+        {
+            "source": "/(.*)",
+            "headers": [
+                {
+                    "key": "Content-Security-Policy",
+                    "value": "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+                },
+                {
+                    "key": "Access-Control-Allow-Origin",
+                    "value": "*"
+                },
+                {
+                    "key": "Access-Control-Allow-Methods",
+                    "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+                },
+                {
+                    "key": "Access-Control-Allow-Headers",
+                    "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
+                }
+            ]
+        }
+    ],
+    "rewrites": [
+        {
+            "source": "/(.*)",
+            "destination": "src/server.js"
+        }
+    ]
+}

@@ -3,16 +3,14 @@ const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const { updateUser, getUserById } = require('../services/dataStorage');
 const {
-    createSubscriptionPayment,
-    createOneTimePayment,
-    verifyITN,
-    cancelSubscription,
+    initializeTransaction,
+    verifyWebhook,
     PRICING
-} = require('../services/payment');
+} = require('../services/paystack');
 
 /**
  * POST /payments/create-checkout
- * Create PayFast payment form data
+ * Create Paystack checkout session
  */
 router.post('/create-checkout', authenticateToken, async (req, res) => {
     try {
@@ -23,33 +21,25 @@ router.post('/create-checkout', authenticateToken, async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        const backendUrl = process.env.BACKEND_URL || 'http://localhost:8080';
+        const amount = type === 'subscription' ? PRICING.premium.amount : PRICING.perScan.amount;
 
-        const returnUrl = `${frontendUrl}/payment-success`;
-        const cancelUrl = `${frontendUrl}/pricing`;
-        const notifyUrl = `${backendUrl}/payments/notify`;
+        const paymentData = await initializeTransaction(
+            user.email,
+            amount,
+            {
+                userId: user.userId,
+                type: type
+            }
+        );
 
-        let paymentData;
-        if (type === 'subscription') {
-            paymentData = createSubscriptionPayment(
-                user.userId,
-                user.email,
-                returnUrl,
-                cancelUrl,
-                notifyUrl
-            );
-        } else {
-            paymentData = createOneTimePayment(
-                user.userId,
-                user.email,
-                returnUrl,
-                cancelUrl,
-                notifyUrl
-            );
-        }
-
-        res.json(paymentData);
+        // Paystack returns { authorization_url, access_code, reference }
+        res.json({
+            url: paymentData.authorization_url,
+            data: {
+                reference: paymentData.reference,
+                access_code: paymentData.access_code
+            }
+        });
     } catch (error) {
         console.error('Create checkout error:', error);
         res.status(500).json({ error: 'Failed to create checkout', message: error.message });
@@ -58,49 +48,48 @@ router.post('/create-checkout', authenticateToken, async (req, res) => {
 
 /**
  * POST /payments/notify
- * Handle PayFast ITN (Instant Transaction Notification)
+ * Handle Paystack Webhook
  */
-router.post('/notify', express.urlencoded({ extended: true }), async (req, res) => {
+router.post('/notify', express.json(), async (req, res) => {
     try {
-        console.log('PayFast ITN received:', req.body);
+        const signature = req.headers['x-paystack-signature'];
 
-        const verification = verifyITN(req.body, req.headers);
-
-        if (!verification.valid) {
-            console.log('Invalid ITN or incomplete payment:', verification.status);
-            return res.status(200).send('OK'); // Still return 200 to PayFast
+        if (!verifyWebhook(signature, req.body)) {
+            console.error('Invalid Paystack signature');
+            return res.status(400).send('Invalid signature');
         }
 
-        const { userId, paymentType, amount } = verification;
+        const event = req.body;
+        console.log('Paystack event received:', event.event);
 
-        if (paymentType === 'subscription') {
-            // Activate premium subscription
-            const expiryDate = new Date();
-            expiryDate.setMonth(expiryDate.getMonth() + 1);
+        if (event.event === 'charge.success') {
+            const { userId, type } = event.data.metadata;
+            const reference = event.data.reference;
 
-            await updateUser(userId, {
-                subscriptionTier: 'premium',
-                subscriptionExpiry: expiryDate.toISOString(),
-                payfastToken: verification.payfastId
-            });
+            if (type === 'subscription') {
+                // Activate premium lifetime access
+                await updateUser(userId, {
+                    subscriptionTier: 'premium',
+                    subscriptionExpiry: null,
+                    payfastToken: reference // Reusing field for Paystack reference
+                });
+                console.log('Premium lifetime access activated for user:', userId);
+            } else if (type === 'one-time') {
+                // Add scan credits
+                const user = await getUserById(userId);
+                const currentCredits = user.scanCredits || 0;
 
-            console.log('Premium subscription activated for user:', userId);
-        } else if (paymentType === 'per_scan') {
-            // Add scan credits
-            const user = await getUserById(userId);
-            const currentCredits = user.scanCredits || 0;
-
-            await updateUser(userId, {
-                scanCredits: currentCredits + 1
-            });
-
-            console.log('Scan credit added for user:', userId);
+                await updateUser(userId, {
+                    scanCredits: currentCredits + 1
+                });
+                console.log('Scan credit added for user:', userId);
+            }
         }
 
         res.status(200).send('OK');
     } catch (error) {
-        console.error('ITN processing error:', error);
-        res.status(200).send('OK'); // Still return 200 to prevent retries
+        console.error('Webhook processing error:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
@@ -166,9 +155,10 @@ router.get('/pricing', (req, res) => {
             currency: PRICING.premium.currency,
             interval: PRICING.premium.interval,
             features: [
-                'Unlimited contract scans',
+                'Unlimited contract scans forever',
                 'AI-powered letter generation',
                 'Full contract advice library',
+                'Lifetime access - no recurring fees',
                 'Priority support'
             ]
         },

@@ -53,24 +53,10 @@ export function PricingPage() {
 
         setCheckoutLoading(type);
         try {
-            const { url, data } = await createCheckout(type);
+            const { url } = await createCheckout(type);
 
-            // Create and submit PayFast form
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = url;
-
-            // Add all PayFast fields as hidden inputs
-            for (const [key, value] of Object.entries(data)) {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = key;
-                input.value = value;
-                form.appendChild(input);
-            }
-
-            document.body.appendChild(form);
-            form.submit();
+            // Redirect to Paystack checkout page
+            window.location.href = url;
         } catch (error) {
             console.error('Checkout error:', error);
             alert('Failed to create checkout session. Please try again.');
@@ -100,7 +86,7 @@ export function PricingPage() {
                         </div>
                     </div>
                     <ul className="features">
-                        <li>✓ 2 contract scans per month</li>
+                        <li>✓ 1 free contract scan</li>
                         <li>✓ Basic red flag analysis</li>
                         <li>✓ Contract advice library</li>
                         <li>✗ Letter generation</li>
@@ -141,12 +127,15 @@ export function PricingPage() {
                 {/* Premium Plan */}
                 <div className="pricing-card featured" ref={premiumCardRef}>
                     <div className="badge">Most Popular</div>
+                    <div className="promo-warning">⚠️ Promotional Price - Ending Soon!</div>
                     <div className="plan-header">
                         <h2>Premium</h2>
                         <div className="price">
                             <span className="amount">R{pricing?.subscription?.amount}</span>
-                            <span className="period">/month</span>
+                            <span className="period">one-time</span>
                         </div>
+                        <div className="original-price">Regular price: R499 one-time</div>
+                        <div className="lifetime-badge">🎉 Lifetime Access Forever!</div>
                     </div>
                     <ul className="features">
                         {pricing?.subscription?.features.map((feature, idx) => (
@@ -158,7 +147,7 @@ export function PricingPage() {
                         onClick={() => handleCheckout('subscription')}
                         disabled={isPremium() || checkoutLoading === 'subscription'}
                     >
-                        {isPremium() ? 'Current Plan' : checkoutLoading === 'subscription' ? 'Loading...' : 'Upgrade to Premium'}
+                        {isPremium() ? 'Current Plan' : checkoutLoading === 'subscription' ? 'Loading...' : 'Lock In This Price'}
                     </button>
                 </div>
             </div>

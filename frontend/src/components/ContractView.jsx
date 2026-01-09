@@ -31,25 +31,9 @@ function ContractView({ data, onReset }) {
         low: flags.filter(f => f.severity < 50)
     } : { high: [], medium: [], low: [] };
 
-    // Bold important keywords in summary
+    // Summary is now pre-formatted with <strong> tags by the LLM
     const formatSummary = (text) => {
-        if (!text) return text;
-
-        const keywords = [
-            'risk', 'risks', 'liability', 'terminate', 'termination', 'penalty', 'penalties',
-            'fee', 'fees', 'payment', 'payments', 'obligation', 'obligations', 'breach',
-            'damages', 'indemnify', 'indemnification', 'warranty', 'warranties', 'dispute',
-            'arbitration', 'jurisdiction', 'confidential', 'confidentiality', 'non-compete',
-            'exclusive', 'exclusivity', 'renewal', 'auto-renew', 'cancellation', 'refund'
-        ];
-
-        let formatted = text;
-        keywords.forEach(keyword => {
-            const regex = new RegExp(`\\b(${keyword})\\b`, 'gi');
-            formatted = formatted.replace(regex, '<strong>$1</strong>');
-        });
-
-        return formatted;
+        return text;
     };
 
     const renderFlagGroup = (title, flagList, severity) => {
@@ -100,6 +84,13 @@ function ContractView({ data, onReset }) {
                 <>
                     <div className="section flags-section">
                         <h3>🚩 Red Flags Detected ({flags.length})</h3>
+
+                        <div className="severity-legend">
+                            <div className="legend-item"><span className="dot critical"></span> <strong>80-100 (Critical)</strong>: High risk of claim rejection or total loss.</div>
+                            <div className="legend-item"><span className="dot important"></span> <strong>50-79 (Important)</strong>: Concerning terms that need attention.</div>
+                            <div className="legend-item"><span className="dot minor"></span> <strong>0-49 (Minor)</strong>: Standard terms or minor points.</div>
+                        </div>
+
                         <p className="flags-hint">Click on any flag to view details</p>
 
                         {renderFlagGroup('Critical Issues', groupedFlags.high, 'high')}

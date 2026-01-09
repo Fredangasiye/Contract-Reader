@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { analyzeContract } from '../api';
+import { analyzeContract, analyzeContractUrl } from '../api';
+import { useAuth } from '../contexts/AuthContext';
 import axios from 'axios';
 
 function UploadForm({ onAnalysisComplete }) {
@@ -11,6 +12,7 @@ function UploadForm({ onAnalysisComplete }) {
     const [isDragging, setIsDragging] = useState(false);
     const [password, setPassword] = useState('');
     const [uploadMode, setUploadMode] = useState('file'); // 'file' or 'url'
+    const { user } = useAuth();
 
     const handleFileChange = (e) => {
         if (e.target.files?.[0]) {
@@ -70,6 +72,24 @@ function UploadForm({ onAnalysisComplete }) {
             return;
         }
 
+        if (!user) {
+            setError(
+                <div className="login-required-prompt">
+                    <h4>🔐 Login Required</h4>
+                    <p>You need to be logged in to analyze contracts. Your first scan is free!</p>
+                    <div className="prompt-actions">
+                        <button onClick={() => window.location.href = '/login'} className="login-link-btn">
+                            Login
+                        </button>
+                        <button onClick={() => window.location.href = '/register'} className="register-link-btn">
+                            Register
+                        </button>
+                    </div>
+                </div>
+            );
+            return;
+        }
+
         setIsUploading(true);
         setError(null);
         const progressInterval = simulateProgress();
@@ -79,14 +99,8 @@ function UploadForm({ onAnalysisComplete }) {
             let analysisResult;
 
             if (uploadMode === 'url' && url) {
-                // Analyze from URL
-                const response = await axios.post('http://localhost:8080/analyze',
-                    { url },
-                    { headers: { 'Content-Type': 'application/json' } }
-                );
-                analysisResult = response.data;
+                analysisResult = await analyzeContractUrl(url);
             } else {
-                // Analyze from file
                 analysisResult = await analyzeContract(file, password);
             }
 
@@ -101,7 +115,21 @@ function UploadForm({ onAnalysisComplete }) {
         } catch (err) {
             console.error("Error in analysis flow:", err);
             clearInterval(progressInterval);
-            setError("Failed to process contract. Please try again.");
+
+            if (err.response?.data?.error === 'LIMIT_REACHED') {
+                setError(
+                    <div className="limit-reached-prompt">
+                        <h4>🚀 Limit Reached</h4>
+                        <p>You've used your free scan! Upgrade to Premium for unlimited scans, legal letter generation, and more.</p>
+                        <button onClick={() => window.location.href = '/pricing'} className="upgrade-link-btn">
+                            Upgrade to Premium
+                        </button>
+                    </div>
+                );
+            } else {
+                const errorMessage = err.response?.data?.message || "Failed to process contract. Please try again.";
+                setError(errorMessage);
+            }
         } finally {
             setTimeout(() => {
                 setIsUploading(false);

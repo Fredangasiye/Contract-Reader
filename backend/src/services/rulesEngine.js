@@ -11,7 +11,7 @@ let rulesLibrary = null;
  */
 function loadRules(contractType = 'insurance') {
     if (!rulesLibrary) {
-        const libraryPath = path.join(__dirname, '../../../docs/common_traps_library.json');
+        const libraryPath = path.join(__dirname, '../../data/common_traps_library.json');
         try {
             const data = fs.readFileSync(libraryPath, 'utf8');
             rulesLibrary = JSON.parse(data);
@@ -54,22 +54,58 @@ function scoreSeverity(match, rule) {
  * @returns {string} - 'lease', 'employment', 'software', 'insurance', or 'general'
  */
 function detectContractType(text) {
-    const lowerText = text.toLowerCase().slice(0, 2000); // Check first 2000 chars
+    const lowerText = text.toLowerCase().slice(0, 5000); // Check first 5000 chars for better context
 
-    if (/(lease|tenancy|tenant|landlord|rental agreement|premises|lessor|lessee)/.test(lowerText)) {
-        return 'lease';
-    }
-    if (/(employment|employee|employer|salary|probation|termination|workplace)/.test(lowerText)) {
-        return 'employment';
-    }
-    if (/(software|license|saas|subscription|user|developer|api|platform)/.test(lowerText)) {
-        return 'software';
-    }
-    if (/(insurance|policy|coverage|premium|deductible|insurer|insured|claim)/.test(lowerText)) {
-        return 'insurance';
+    const scores = {
+        insurance: 0,
+        lease: 0,
+        employment: 0,
+        software: 0
+    };
+
+    // Insurance keywords
+    if (/(?:insurance|policy|coverage|premium|deductible|insurer|insured|claim|hollard|naked)/.test(lowerText)) {
+        scores.insurance += 10;
+        // Boost if multiple keywords found
+        const matches = lowerText.match(/(?:insurance|policy|coverage|premium|deductible|insurer|insured|claim)/g) || [];
+        scores.insurance += matches.length;
     }
 
-    return 'general';
+    // Lease keywords
+    if (/(?:lease|tenancy|tenant|landlord|rental agreement|premises|lessor|lessee)/.test(lowerText)) {
+        scores.lease += 10;
+        const matches = lowerText.match(/(?:lease|tenancy|tenant|landlord|rental agreement|premises)/g) || [];
+        scores.lease += matches.length;
+    }
+
+    // Employment keywords
+    if (/(?:employment|employee|employer|salary|probation|termination|workplace|remuneration)/.test(lowerText)) {
+        scores.employment += 10;
+        const matches = lowerText.match(/(?:employment|employee|employer|salary|probation|termination)/g) || [];
+        scores.employment += matches.length;
+    }
+
+    // Software keywords (more specific to avoid false positives in insurance exclusions)
+    if (/(?:software license|saas agreement|end user license|eula|software subscription|api license)/.test(lowerText)) {
+        scores.software += 10;
+    }
+    // Lower weight for general software terms
+    if (/(?:software|developer|api|platform)/.test(lowerText)) {
+        scores.software += 2;
+    }
+
+    // Find the highest score
+    let bestType = 'general';
+    let maxScore = 5; // Minimum threshold
+
+    for (const [type, score] of Object.entries(scores)) {
+        if (score > maxScore) {
+            maxScore = score;
+            bestType = type;
+        }
+    }
+
+    return bestType;
 }
 
 /**

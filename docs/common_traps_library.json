@@ -754,5 +754,99 @@
                 "suggested_action": "Test your tracker regularly."
             }
         }
+    },
+    "lease": {
+        "automatic_renewal": {
+            "title": "Automatic lease renewal",
+            "patterns": [
+                "automatically\\s+renew",
+                "renewal\\s+period",
+                "notice\\s+to\\s+prevent\\s+renewal"
+            ],
+            "explanation": "The lease may automatically renew for another term if you don't give notice in time.",
+            "default_severity": 65,
+            "category": "term"
+        },
+        "deposit_forfeiture": {
+            "title": "Deposit forfeiture clause",
+            "patterns": [
+                "forfeit(?:ure)?\\s+of\\s+deposit",
+                "non-refundable\\s+deposit",
+                "retain\\s+the\\s+deposit"
+            ],
+            "explanation": "Certain conditions may allow the landlord to keep your deposit unfairly.",
+            "default_severity": 85,
+            "category": "financial"
+        },
+        "maintenance_responsibility": {
+            "title": "Tenant maintenance burden",
+            "patterns": [
+                "tenant\\s+responsible\\s+for\\s+all\\s+repairs",
+                "maintain\\s+at\\s+tenant's\\s+expense",
+                "structural\\s+repairs"
+            ],
+            "explanation": "The lease may shift structural or major maintenance costs to the tenant.",
+            "default_severity": 75,
+            "category": "maintenance"
+        }
+    },
+    "employment": {
+        "non_compete": {
+            "title": "Restrictive non-compete",
+            "patterns": [
+                "non-compete",
+                "restraint\\s+of\\s+trade",
+                "not\\s+work\\s+for\\s+a\\s+competitor"
+            ],
+            "explanation": "This clause may prevent you from working in your industry for a period after leaving.",
+            "default_severity": 80,
+            "category": "legal"
+        },
+        "intellectual_property": {
+            "title": "Broad IP assignment",
+            "patterns": [
+                "intellectual\\s+property",
+                "assignment\\s+of\\s+rights",
+                "ownership\\s+of\\s+inventions"
+            ],
+            "explanation": "The employer may claim ownership of everything you create, even outside of work hours.",
+            "default_severity": 70,
+            "category": "legal"
+        },
+        "termination_without_cause": {
+            "title": "Termination without cause",
+            "patterns": [
+                "terminate\\s+at\\s+any\\s+time",
+                "without\\s+notice",
+                "at-will\\s+employment"
+            ],
+            "explanation": "You could be fired at any time without a specific reason or fair warning.",
+            "default_severity": 90,
+            "category": "term"
+        }
+    },
+    "general": {
+        "hidden_fees": {
+            "title": "Hidden fees or penalties",
+            "patterns": [
+                "administrative\\s+fee",
+                "processing\\s+charge",
+                "penalty\\s+for\\s+early"
+            ],
+            "explanation": "Look out for extra costs that aren't part of the main price.",
+            "default_severity": 60,
+            "category": "cost"
+        },
+        "vague_terms": {
+            "title": "Vague or ambiguous terms",
+            "patterns": [
+                "at\\s+our\\s+sole\\s+discretion",
+                "reasonable\\s+efforts",
+                "subject\\s+to\\s+change"
+            ],
+            "explanation": "Vague language gives the other party more power to interpret the contract in their favor.",
+            "default_severity": 50,
+            "category": "legal"
+        }
     }
 }

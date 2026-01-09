@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 // Helper to get auth token from localStorage
 const getAuthToken = () => localStorage.getItem('authToken');
@@ -28,6 +28,21 @@ export async function analyzeContract(file, password = '') {
         return response.data;
     } catch (error) {
         console.error("Error analyzing contract:", error);
+        throw error;
+    }
+}
+
+export async function analyzeContractUrl(url) {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/analyze`, { url }, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...getAuthHeaders()
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error analyzing contract URL:", error);
         throw error;
     }
 }

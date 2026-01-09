@@ -13,7 +13,7 @@ const USE_SUPABASE = !!(process.env.SUPABASE_URL && process.env.SUPABASE_KEY);
 const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || 'default-key-change-in-production-32b'; // Must be 32 bytes
 
 // Local Storage Paths
-const STORAGE_DIR = path.join(__dirname, '../../../data');
+const STORAGE_DIR = process.env.VERCEL ? '/tmp' : path.join(__dirname, '../../../data');
 const STORAGE_FILE = path.join(STORAGE_DIR, 'analyses.json');
 const USERS_FILE = path.join(STORAGE_DIR, 'users.json');
 const LETTERS_FILE = path.join(STORAGE_DIR, 'letters.json');
@@ -378,7 +378,11 @@ async function updateUser(userId, updates) {
         const dbUpdates = {};
         if (updates.email) dbUpdates.email = updates.email;
         if (updates.subscriptionTier) dbUpdates.subscription_tier = updates.subscriptionTier;
-        if (updates.scanCount) dbUpdates.scan_count = updates.scanCount;
+        if (updates.scanCount !== undefined) dbUpdates.scan_count = updates.scanCount;
+        if (updates.scanCredits !== undefined) dbUpdates.scan_credits = updates.scanCredits;
+        if (updates.subscriptionExpiry !== undefined) dbUpdates.subscription_expiry = updates.subscriptionExpiry;
+        if (updates.payfastToken) dbUpdates.payfast_token = updates.payfastToken;
+        if (updates.stripeCustomerId) dbUpdates.stripe_customer_id = updates.stripeCustomerId;
 
         const { data, error } = await supabase
             .from('users')
@@ -560,42 +564,150 @@ async function updateLetter(letterId, updates) {
 }
 
 // ==========================================
-// ADVICE (Keep as local JSON for now, static content)
+// ADVICE
 // ==========================================
 
 async function loadAdvice() {
-    try {
-        const data = await fs.readFile(ADVICE_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (error) {
-        if (error.code === 'ENOENT') return [];
-        throw error;
+    if (USE_SUPABASE) {
+        const { data, error } = await supabase
+            .from('advice')
+            .select('*');
+
+        if (error) {
+            console.error('Supabase loadAdvice error:', error);
+            throw error;
+        }
+
+        return data.map(a => ({
+            adviceId: a.advice_id,
+            contractType: a.contract_type,
+            section: a.section,
+            title: a.title,
+            content: a.content,
+            lastUpdated: a.last_updated
+        }));
+    } else {
+        try {
+            const data = await fs.readFile(ADVICE_FILE, 'utf8');
+            return JSON.parse(data);
+        } catch (error) {
+            if (error.code === 'ENOENT') return [];
+            throw error;
+        }
     }
 }
 
 async function saveAdvice(advice) {
-    await ensureStorageDir();
-    await fs.writeFile(ADVICE_FILE, JSON.stringify(advice, null, 2), 'utf8');
+    if (USE_SUPABASE) {
+        // Upsert advice items
+        const dbAdvice = advice.map(a => ({
+            advice_id: a.adviceId,
+            contract_type: a.contractType,
+            section: a.section,
+            title: a.title,
+            content: a.content,
+            last_updated: a.lastUpdated || new Date().toISOString()
+        }));
+
+        const { error } = await supabase
+            .from('advice')
+            .upsert(dbAdvice, { onConflict: 'advice_id' });
+
+        if (error) {
+            console.error('Supabase saveAdvice error:', error);
+            throw error;
+        }
+    } else {
+        await ensureStorageDir();
+        await fs.writeFile(ADVICE_FILE, JSON.stringify(advice, null, 2), 'utf8');
+    }
 }
 
 async function getAdviceByType(contractType) {
-    const advice = await loadAdvice();
-    return advice.filter(a => a.contractType === contractType);
+    if (USE_SUPABASE) {
+        const { data, error } = await supabase
+            .from('advice')
+            .select('*')
+            .eq('contract_type', contractType);
+
+        if (error) {
+            console.error('Supabase getAdviceByType error:', error);
+            throw error;
+        }
+
+        return data.map(a => ({
+            adviceId: a.advice_id,
+            contractType: a.contract_type,
+            section: a.section,
+            title: a.title,
+            content: a.content,
+            lastUpdated: a.last_updated
+        }));
+    } else {
+        const advice = await loadAdvice();
+        return advice.filter(a => a.contractType === contractType);
+    }
 }
 
 async function getAdviceByTypeAndSection(contractType, section) {
-    const advice = await loadAdvice();
-    return advice.find(a => a.contractType === contractType && a.section === section);
+    if (USE_SUPABASE) {
+        const { data, error } = await supabase
+            .from('advice')
+            .select('*')
+            .eq('contract_type', contractType)
+            .eq('section', section)
+            .single();
+
+        if (error) {
+            if (error.code === 'PGRST116') return null; // Not found
+            console.error('Supabase getAdviceByTypeAndSection error:', error);
+            throw error;
+        }
+
+        return {
+            adviceId: data.advice_id,
+            contractType: data.contract_type,
+            section: data.section,
+            title: data.title,
+            content: data.content,
+            lastUpdated: data.last_updated
+        };
+    } else {
+        const advice = await loadAdvice();
+        return advice.find(a => a.contractType === contractType && a.section === section);
+    }
 }
 
 async function searchAdvice(query) {
-    const advice = await loadAdvice();
-    const lowerQuery = query.toLowerCase();
-    return advice.filter(a =>
-        a.content.toLowerCase().includes(lowerQuery) ||
-        a.contractType.toLowerCase().includes(lowerQuery) ||
-        a.section.toLowerCase().includes(lowerQuery)
-    );
+    if (USE_SUPABASE) {
+        // Use full-text search if possible, or simple ilike
+        const { data, error } = await supabase
+            .from('advice')
+            .select('*')
+            .or(`title.ilike.%${query}%,content.ilike.%${query}%`);
+
+        if (error) {
+            console.error('Supabase searchAdvice error:', error);
+            throw error;
+        }
+
+        return data.map(a => ({
+            adviceId: a.advice_id,
+            contractType: a.contract_type,
+            section: a.section,
+            title: a.title,
+            content: a.content,
+            lastUpdated: a.last_updated
+        }));
+    } else {
+        const advice = await loadAdvice();
+        const lowerQuery = query.toLowerCase();
+        return advice.filter(a =>
+            a.content.toLowerCase().includes(lowerQuery) ||
+            a.contractType.toLowerCase().includes(lowerQuery) ||
+            a.section.toLowerCase().includes(lowerQuery)
+        );
+    }
 }
 
 module.exports = {

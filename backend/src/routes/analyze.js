@@ -9,13 +9,14 @@ const path = require('path');
 const { extractTextFromFile } = require('../services/visionOcr');
 const { extractTextFromUrl } = require('../services/urlProcessor');
 const { findRedFlags } = require('../services/rulesEngine');
-const { generateSummary, enhanceRedFlags, detectBlindSpots } = require('../services/llmAnalysis');
+const { generateSummary, enhanceRedFlags, detectBlindSpots, extractContractFields } = require('../services/llmAnalysis');
 const { mapFlagsToBoxes } = require('../services/boundingBoxMapper');
-const { storeAnalysis } = require('../services/dataStorage');
+const { storeAnalysis, incrementScanCount, getUserById, updateUser } = require('../services/dataStorage');
+const { authenticateToken } = require('../middleware/auth');
 
 // Configure multer for file uploads
 const upload = multer({
-    dest: 'uploads/',
+    dest: process.env.VERCEL ? '/tmp' : 'uploads/',
     limits: {
         fileSize: 20 * 1024 * 1024 // 20MB limit
     },
@@ -41,10 +42,26 @@ const upload = multer({
  * POST /analyze
  * Accepts file upload OR URL and performs complete analysis
  */
-router.post('/', upload.single('file'), async (req, res) => {
+router.post('/', authenticateToken, upload.single('file'), async (req, res) => {
     const startTime = Date.now();
+    const userId = req.user.userId;
 
     try {
+        // Check scan limit for free users
+        const user = await getUserById(userId);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.subscriptionTier === 'free' && (user.scanCount || 0) >= 1) {
+            // Check if they have purchased credits
+            if ((user.scanCredits || 0) <= 0) {
+                return res.status(403).json({
+                    error: 'LIMIT_REACHED',
+                    message: 'You have reached the limit for free contract uploads. Please upgrade to Premium or buy more scan credits.'
+                });
+            }
+        }
         let ocrResult;
         let source = 'file';
         let fileType = 'unknown';
@@ -106,15 +123,20 @@ router.post('/', upload.single('file'), async (req, res) => {
         const blindSpots = await detectBlindSpots(fullText);
         flags = [...flags, ...blindSpots];
 
-        // Step 5: Map flags to bounding boxes
+        // Step 5: Extract fields for letter generation
+        console.log('Extracting contract fields...');
+        const extractedData = await extractContractFields(fullText, detectedType);
+
+        // Step 6: Map flags to bounding boxes
         console.log('Mapping bounding boxes...');
         flags = mapFlagsToBoxes(flags, pages);
 
-        // Step 6: Store analysis
+        // Step 7: Store analysis
         console.log('Storing analysis...');
         const processingTimeMs = Date.now() - startTime;
 
         const storedAnalysis = await storeAnalysis({
+            userId,
             source,
             sourceUrl: req.body.url || null,
             fullText,
@@ -127,9 +149,19 @@ router.post('/', upload.single('file'), async (req, res) => {
             pageCount: pages.length,
             processingTimeMs,
             metadata: {
-                contractType: detectedType
+                contractType: detectedType,
+                extractedFields: extractedData.fields,
+                suggestedLetterType: extractedData.suggestedLetterType
             }
         });
+
+        // Increment scan count after successful analysis
+        await incrementScanCount(userId);
+
+        // Decrement scan credits if free user used one
+        if (user.subscriptionTier === 'free' && (user.scanCredits || 0) > 0) {
+            await updateUser(userId, { scanCredits: user.scanCredits - 1 });
+        }
 
         // Return comprehensive response
         res.json({
@@ -154,7 +186,9 @@ router.post('/', upload.single('file'), async (req, res) => {
             rules_version: '1.0.0',
             processing_time_ms: processingTimeMs,
             page_count: pages.length,
-            is_stub: ocrResult.isStub || false
+            is_stub: ocrResult.isStub || false,
+            extracted_fields: extractedData.fields,
+            suggested_letter_type: extractedData.suggestedLetterType
         });
 
     } catch (error) {

@@ -84,6 +84,7 @@ function HomePage() {
           <div className="hero-content">
             <h1>Don't Get Trapped by Fine Print Again.</h1>
             <p>Upload your contract. AI exposes the hidden risks they don't want you to see.</p>
+
             <div className="hero-stats">
               <div className="hero-stat">
                 <span className="hero-stat-number">{contractCount.toLocaleString()}+</span>

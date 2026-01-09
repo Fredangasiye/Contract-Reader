@@ -16,13 +16,13 @@ const PAYFAST_HOST = PAYFAST_MODE === 'live'
 
 const PRICING = {
     premium: {
-        amount: 199.99, // R199.99 per month
+        amount: 150.00, // R150 one-time (lifetime access - promotional!)
         currency: 'ZAR',
-        interval: 'month',
-        cycles: 0 // 0 = recurring indefinitely
+        interval: 'lifetime', // One-time payment
+        cycles: 0 // Not a subscription
     },
     perScan: {
-        amount: 99.99, // R99.99 per scan
+        amount: 10.00, // R10 per scan
         currency: 'ZAR'
     }
 };
@@ -33,10 +33,15 @@ const PRICING = {
 function generateSignature(data, passPhrase = null) {
     // Create parameter string
     let pfOutput = '';
+
+    // PayFast expects fields in a specific order for the signature to match
+    // When creating payment data, we define the object in order.
+    // When verifying ITN, we should use the keys as they arrived.
     for (let key in data) {
-        if (data.hasOwnProperty(key)) {
-            if (data[key] !== '') {
-                pfOutput += `${key}=${encodeURIComponent(data[key].toString().trim()).replace(/%20/g, '+')}&`;
+        if (data.hasOwnProperty(key) && key !== 'signature') {
+            const value = data[key];
+            if (value !== undefined && value !== null && value !== '') {
+                pfOutput += `${key}=${encodeURIComponent(value.toString().trim()).replace(/%20/g, '+')}&`;
             }
         }
     }
@@ -44,7 +49,7 @@ function generateSignature(data, passPhrase = null) {
     // Remove last ampersand
     let getString = pfOutput.slice(0, -1);
 
-    if (passPhrase !== null) {
+    if (passPhrase) {
         getString += `&passphrase=${encodeURIComponent(passPhrase.trim()).replace(/%20/g, '+')}`;
     }
 
@@ -52,7 +57,7 @@ function generateSignature(data, passPhrase = null) {
 }
 
 /**
- * Create PayFast payment data for subscription
+ * Create PayFast payment data for Premium (one-time lifetime access)
  */
 function createSubscriptionPayment(userId, email, returnUrl, cancelUrl, notifyUrl) {
     const data = {
@@ -67,21 +72,14 @@ function createSubscriptionPayment(userId, email, returnUrl, cancelUrl, notifyUr
         email_address: email,
 
         // Transaction details
-        m_payment_id: `sub_${userId}_${Date.now()}`,
+        m_payment_id: `premium_${userId}_${Date.now()}`,
         amount: PRICING.premium.amount.toFixed(2),
-        item_name: 'Contract Reader Premium Subscription',
-        item_description: 'Monthly subscription for unlimited scans and letter generation',
-
-        // Subscription details
-        subscription_type: 1, // 1 = subscription
-        billing_date: new Date().toISOString().split('T')[0],
-        recurring_amount: PRICING.premium.amount.toFixed(2),
-        frequency: 3, // 3 = monthly
-        cycles: PRICING.premium.cycles,
+        item_name: 'Contract Reader Premium - Lifetime Access',
+        item_description: 'One-time payment for unlimited lifetime access to all premium features',
 
         // Custom fields
         custom_str1: userId,
-        custom_str2: 'subscription'
+        custom_str2: 'premium_lifetime'
     };
 
     // Generate signature

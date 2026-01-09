@@ -11,6 +11,14 @@ async function initializeAdviceContent() {
     if (adviceInitialized) return;
 
     try {
+        // Check if advice already exists in storage
+        const existingAdvice = await loadAdvice();
+        if (existingAdvice && existingAdvice.length > 0) {
+            adviceInitialized = true;
+            console.log('Advice already exists in storage, skipping initialization');
+            return;
+        }
+
         const adviceFilePath = path.join(__dirname, '../../data/advice_content.json');
         const adviceJson = await fs.readFile(adviceFilePath, 'utf8');
         const adviceContent = JSON.parse(adviceJson);

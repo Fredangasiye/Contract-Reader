@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { login as apiLogin, register as apiRegister } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import './AuthPages.css';
@@ -9,8 +9,17 @@ export function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showDemo, setShowDemo] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const { login } = useAuth();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('mode') === 'demo') {
+            setShowDemo(true);
+        }
+    }, [location]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,17 +75,36 @@ export function LoginPage() {
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
 
-                    <button
-                        type="button"
-                        className="btn-secondary demo-btn"
-                        onClick={() => {
-                            setEmail('demo@example.com');
-                            setPassword('password123');
-                        }}
-                        style={{ marginTop: '1rem' }}
-                    >
-                        👤 Fill Demo Credentials
-                    </button>
+                    {showDemo && (
+                        <>
+                            <div className="auth-divider">
+                                <span>OR</span>
+                            </div>
+
+                            <button
+                                type="button"
+                                className="btn-demo"
+                                onClick={async () => {
+                                    setEmail('demo@example.com');
+                                    setPassword('password123');
+                                    setError('');
+                                    setLoading(true);
+                                    try {
+                                        const response = await apiLogin('demo@example.com', 'password123');
+                                        login(response.user);
+                                        navigate('/');
+                                    } catch (err) {
+                                        setError('Demo login failed. Please try again.');
+                                    } finally {
+                                        setLoading(false);
+                                    }
+                                }}
+                                disabled={loading}
+                            >
+                                🚀 Try Demo (Premium Features)
+                            </button>
+                        </>
+                    )}
                 </form>
 
                 <p className="auth-footer">
