@@ -6,7 +6,7 @@ const axios = require('axios');
  */
 
 // Initialize LLM client
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').trim();
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 const DEFAULT_MODEL = 'mistralai/mistral-7b-instruct';
 
@@ -190,28 +190,40 @@ Respond with JSON array only:`;
 async function callLLM(prompt, options = {}) {
     const { maxTokens = 500, temperature = 0.3 } = options;
 
-    const response = await axios.post(
-        `${OPENROUTER_BASE_URL}/chat/completions`,
-        {
-            model: DEFAULT_MODEL,
-            messages: [
-                { role: 'user', content: prompt }
-            ],
-            max_tokens: maxTokens,
-            temperature
-        },
-        {
-            headers: {
-                'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://contract-reader.app',
-                'X-Title': 'Contract Reader'
+    try {
+        console.log(`Calling OpenRouter with model: ${DEFAULT_MODEL}`);
+        const response = await axios.post(
+            `${OPENROUTER_BASE_URL}/chat/completions`,
+            {
+                model: DEFAULT_MODEL,
+                messages: [
+                    { role: 'user', content: prompt }
+                ],
+                max_tokens: maxTokens,
+                temperature
             },
-            timeout: 30000
-        }
-    );
+            {
+                headers: {
+                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://frontend-nine-alpha-95.vercel.app',
+                    'X-Title': 'Contract Reader'
+                },
+                timeout: 30000
+            }
+        );
 
-    return response.data.choices[0].message.content;
+        return response.data.choices[0].message.content;
+    } catch (error) {
+        if (error.response) {
+            console.error('OpenRouter API Error:', error.response.status, JSON.stringify(error.response.data));
+            // Mask the key in the error message if we re-throw
+            const maskedKey = OPENROUTER_API_KEY ? `${OPENROUTER_API_KEY.substring(0, 10)}...` : 'MISSING';
+            throw new Error(`OpenRouter failed (${error.response.status}) with key ${maskedKey}: ${JSON.stringify(error.response.data)}`);
+        }
+        console.error('LLM Request Error:', error.message);
+        throw error;
+    }
 }
 
 /**
@@ -230,42 +242,115 @@ function generateSummaryStub(text) {
 }
 
 /**
- * Generate specific content for a letter based on contract and user situation
+ * Generate complete letter content based on contract and user situation
  * @param {string} contractText - Contract text
  * @param {string} letterType - Type of letter
  * @param {string} userSituation - User's specific situation/reason
- * @returns {Promise<string>} - Generated content
+ * @param {Object} customData - Additional data from the form
+ * @param {Object} userInfo - User information (name, email, phone)
+ * @returns {Promise<string>} - Generated complete letter
  */
-async function generateLetterContent(contractText, letterType, userSituation) {
+async function generateLetterContent(contractText, letterType, userSituation, customData = {}, userInfo = {}) {
     if (!OPENROUTER_API_KEY) {
-        console.warn('OpenRouter API key missing. Returning raw user situation.');
-        return userSituation;
+        console.warn('OpenRouter API key missing. Cannot generate AI letter.');
+        return null;
     }
 
     try {
-        const prompt = `You are a legal assistant helping a user write a formal letter.
-        
-Letter Type: ${letterType}
-User's Situation: ${userSituation}
+        // Build context from customData
+        const contextDetails = buildContextDetails(letterType, customData);
 
-Contract Excerpt:
-${contractText.substring(0, 3000)}
+        const prompt = `You are a professional legal letter writer in South Africa. Write a COMPLETE, formal dispute letter based on the information provided.
 
-Task: Write a persuasive and professional paragraph (or two) to be included in the letter. 
-- Reference specific relevant clauses from the contract if possible.
-- Argue why the user's request is valid based on the contract terms and their situation.
-- Keep it concise, professional, and firm.
-- Do NOT include salutations or signatures, just the body paragraphs.
+LETTER TYPE: ${letterType.replace(/_/g, ' ').toUpperCase()}
 
-Generated Content:`;
+USER'S SITUATION:
+${userSituation}
 
-        const response = await callLLM(prompt, { maxTokens: 400, temperature: 0.5 });
+${contextDetails}
+
+CONTRACT EXCERPT:
+${contractText.substring(0, 3500)}
+
+INSTRUCTIONS:
+1. Write a COMPLETE formal letter from start to finish
+2. Use proper business letter format
+3. Start with "Dear [appropriate recipient],"
+4. Include ALL necessary sections:
+   - Opening statement of purpose
+   - Detailed explanation of the situation
+   - Reference to SPECIFIC contract clauses (quote exact text if possible)
+   - Legal arguments using South African law:
+     * Consumer Protection Act (CPA) for consumer disputes
+     * Policyholder Protection Rules (PPRs) for insurance
+     * Short-term Insurance Act (STIA) for insurance
+     * Treating Customers Fairly (TCF) principles
+     * Basic Conditions of Employment Act (BCEA) for employment
+     * Rental Housing Act for leases
+   - Clear demands or requests
+   - Deadline for response (typically 10-30 business days)
+   - Professional closing
+5. End with "Sincerely," followed by the user's name
+6. Be persuasive, professional, and firm
+7. Reference specific contract terms and explain why they are unfair, illegal, or not applicable
+8. Make the letter ready to send - no placeholders or [brackets]
+
+USER INFORMATION:
+Name: ${userInfo.name || 'The Policyholder'}
+Email: ${userInfo.email || ''}
+Phone: ${userInfo.phone || ''}
+Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+
+Write the complete letter now:`;
+
+        const response = await callLLM(prompt, { maxTokens: 1200, temperature: 0.6 });
         return response.trim();
 
     } catch (error) {
-        console.error('LLM letter generation error:', error.message);
-        return userSituation; // Fallback to user's raw input
+        console.error('LLM complete letter generation error:', error.message);
+        return null;
     }
+}
+
+/**
+ * Build context details from customData for the letter
+ */
+function buildContextDetails(letterType, customData) {
+    let details = '';
+
+    if (letterType === 'insurance_claim_dispute') {
+        details = `CLAIM DETAILS:
+- Insurance Company: ${customData.insurance_company || 'Not provided'}
+- Policy Number: ${customData.policy_number || 'Not provided'}
+- Claim Number: ${customData.claim_number || 'Not provided'}
+- Claim Date: ${customData.claim_date || 'Not provided'}`;
+    } else if (letterType === 'gym_cancellation') {
+        details = `MEMBERSHIP DETAILS:
+- Gym Name: ${customData.gym_name || 'Not provided'}
+- Member ID: ${customData.member_id || 'Not provided'}
+- Sign Date: ${customData.sign_date || 'Not provided'}`;
+    } else if (letterType === 'lease_violation') {
+        details = `PROPERTY DETAILS:
+- Landlord/Property Manager: ${customData.landlord_name || 'Not provided'}
+- Property Address: ${customData.property_address || 'Not provided'}
+- Requested Remedy Period: ${customData.remedy_period || '7'} days`;
+    } else if (letterType === 'employment_negotiation') {
+        details = `EMPLOYMENT DETAILS:
+- Employer/Manager: ${customData.employer_name || 'Not provided'}
+- Company: ${customData.company_name || 'Not provided'}
+- Position: ${customData.position || 'Not provided'}`;
+    } else if (letterType === 'service_cancellation') {
+        details = `SERVICE DETAILS:
+- Service Provider: ${customData.service_provider || 'Not provided'}
+- Account Number: ${customData.account_number || 'Not provided'}
+- Desired Cancellation Date: ${customData.cancellation_date || 'Immediately'}`;
+    } else if (letterType === 'other_dispute') {
+        details = `RECIPIENT DETAILS:
+- Recipient Name: ${customData.recipient_name || 'Not provided'}
+- Company: ${customData.recipient_company || 'Not provided'}`;
+    }
+
+    return details;
 }
 
 /**

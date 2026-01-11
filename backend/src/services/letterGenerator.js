@@ -167,67 +167,87 @@ async function generateLetter({ letterType, userInfo, customData }) {
     let content = templateData.template;
     let subject = templateData.subject;
 
-    // AI Enhancement: If contract text is provided in customData (from upload), generate specific content
-    if (customData.contractText && (customData.reason || customData.situation || customData.dispute_details)) {
-        const userSituation = customData.reason || customData.situation || customData.dispute_details;
-        console.log(`Generating AI content for ${letterType}...`);
+    // AI Enhancement: If contract text is provided, generate the ENTIRE letter using AI
+    if (customData.contractText) {
+        console.log(`🤖 AI Enhancement: Generating complete letter for ${letterType}...`);
 
-        const aiContent = await generateLetterContent(
-            customData.contractText,
-            letterType,
-            userSituation
-        );
+        try {
+            // Get the user's situation/reason from the appropriate field
+            const userSituation = customData.reason || customData.situation || customData.dispute_details || customData.concerns || 'User dispute';
 
-        // Replace the user's raw input with the AI generated content in the template
-        // We map the AI content to the appropriate placeholder based on letter type
-        if (letterType === 'gym_cancellation') customData.reason_section = aiContent;
-        else if (letterType === 'insurance_claim_dispute') customData.situation_description = aiContent;
-        else if (letterType === 'lease_violation') customData.situation_description = aiContent;
-        else if (letterType === 'employment_negotiation') customData.concerns_section = aiContent;
-        else if (letterType === 'service_cancellation') customData.reason_section = aiContent;
-        else if (letterType === 'other_dispute') customData.dispute_details = aiContent;
+            // Generate AI-enhanced letter content
+            const aiGeneratedLetter = await generateLetterContent(
+                customData.contractText,
+                letterType,
+                userSituation,
+                customData,
+                userInfo
+            );
+
+            // If AI generation succeeded, use it as the complete letter content
+            if (aiGeneratedLetter && aiGeneratedLetter.trim().length > 100) {
+                console.log(`✅ AI letter generated successfully (${aiGeneratedLetter.length} chars)`);
+                content = aiGeneratedLetter;
+
+                // Update subject if AI provided one
+                if (customData.custom_subject) {
+                    subject = customData.custom_subject;
+                }
+            } else {
+                console.warn('⚠️ AI generated content too short, falling back to template');
+            }
+        } catch (error) {
+            console.error('❌ AI letter generation failed:', error.message);
+            console.log('📝 Falling back to template-based generation');
+            // Fall through to template-based generation
+        }
+    } else {
+        console.log(`📝 No contract text provided, using template for ${letterType}`);
     }
 
-    // Common placeholders
-    const replacements = {
-        '{user_name}': userInfo.name || '[Your Name]',
-        '{contact_info}': `${userInfo.email || ''}${userInfo.phone ? ' | ' + userInfo.phone : ''}` || '[Your Contact]',
-        '{date}': new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
-        '{gym_name}': customData.gym_name || '[Gym Name]',
-        '{member_id}': customData.member_id || '[Member ID]',
-        '{sign_date}': customData.sign_date || '[Sign Date]',
-        '{reason_section}': customData.reason_section || customData.reason || '[Reason for cancellation]',
-        '{cancellation_date}': customData.cancellation_date || new Date().toLocaleDateString(),
-        '{insurance_company}': customData.insurance_company || '[Insurance Company]',
-        '{claim_number}': customData.claim_number || '[Claim Number]',
-        '{claim_date}': customData.claim_date || '[Claim Date]',
-        '{policy_number}': customData.policy_number || '[Policy Number]',
-        '{situation_description}': customData.situation_description || customData.situation || '[Situation description]',
-        '{landlord_name}': customData.landlord_name || '[Landlord Name]',
-        '{property_address}': customData.property_address || '[Property Address]',
-        '{remedy_period}': customData.remedy_period || '7',
-        '{employer_name}': customData.employer_name || '[Employer Name]',
-        '{company_name}': customData.company_name || '[Company Name]',
-        '{position}': customData.position || '[Position]',
-        '{concerns_section}': customData.concerns_section || customData.concerns || '[Concerns to discuss]',
-        '{service_provider}': customData.service_provider || '[Service Provider]',
-        '{account_number}': customData.account_number || '[Account Number]',
-        '{recipient_name}': customData.recipient_name || '[Recipient Name]',
-        '{recipient_company}': customData.recipient_company || '[Company Name]',
-        '{dispute_details}': customData.dispute_details || '[Dispute details]',
-        '{red_flags_section}': '[Specific concerns from your contract]',
-        '{contract_reference}': 'the contract states that',
-        '{legal_reference}': getLegalReference(letterType, customData.state),
-        '{legal_rights}': getLegalRights(letterType, customData.state),
-        '{coverage_argument}': getCoverageArgument(customData),
-        '{cancellation_terms}': customData.cancellation_terms || 'cancellation is permitted',
-        '{state}': customData.state || 'your state'
-    };
+    // If we're still using the template (no AI or AI failed), fill in placeholders
+    if (content === templateData.template) {
+        // Common placeholders
+        const replacements = {
+            '{user_name}': userInfo.name || '[Your Name]',
+            '{contact_info}': `${userInfo.email || ''}${userInfo.phone ? ' | ' + userInfo.phone : ''}` || '[Your Contact]',
+            '{date}': new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            '{gym_name}': customData.gym_name || '[Gym Name]',
+            '{member_id}': customData.member_id || '[Member ID]',
+            '{sign_date}': customData.sign_date || '[Sign Date]',
+            '{reason_section}': customData.reason_section || customData.reason || '[Reason for cancellation]',
+            '{cancellation_date}': customData.cancellation_date || new Date().toLocaleDateString(),
+            '{insurance_company}': customData.insurance_company || '[Insurance Company]',
+            '{claim_number}': customData.claim_number || '[Claim Number]',
+            '{claim_date}': customData.claim_date || '[Claim Date]',
+            '{policy_number}': customData.policy_number || '[Policy Number]',
+            '{situation_description}': customData.situation_description || customData.situation || '[Situation description]',
+            '{landlord_name}': customData.landlord_name || '[Landlord Name]',
+            '{property_address}': customData.property_address || '[Property Address]',
+            '{remedy_period}': customData.remedy_period || '7',
+            '{employer_name}': customData.employer_name || '[Employer Name]',
+            '{company_name}': customData.company_name || '[Company Name]',
+            '{position}': customData.position || '[Position]',
+            '{concerns_section}': customData.concerns_section || customData.concerns || '[Concerns to discuss]',
+            '{service_provider}': customData.service_provider || '[Service Provider]',
+            '{account_number}': customData.account_number || '[Account Number]',
+            '{recipient_name}': customData.recipient_name || '[Recipient Name]',
+            '{recipient_company}': customData.recipient_company || '[Company Name]',
+            '{dispute_details}': customData.dispute_details || '[Dispute details]',
+            '{red_flags_section}': customData.red_flags_section || 'Based on my review of the contract terms, I have concerns about the fairness and legality of certain clauses.',
+            '{contract_reference}': 'the contract states that',
+            '{legal_reference}': getLegalReference(letterType, customData.state),
+            '{legal_rights}': getLegalRights(letterType, customData.state),
+            '{coverage_argument}': getCoverageArgument(customData),
+            '{cancellation_terms}': customData.cancellation_terms || 'cancellation is permitted',
+            '{state}': customData.state || 'South Africa'
+        };
 
-    // Replace all placeholders
-    for (const [key, value] of Object.entries(replacements)) {
-        content = content.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), value || `[${key}]`);
-        subject = subject.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), value || `[${key}]`);
+        // Replace all placeholders
+        for (const [key, value] of Object.entries(replacements)) {
+            content = content.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), value || `[${key}]`);
+            subject = subject.replace(new RegExp(key.replace(/[{}]/g, '\\$&'), 'g'), value || `[${key}]`);
+        }
     }
 
     return {
@@ -241,11 +261,11 @@ async function generateLetter({ letterType, userInfo, customData }) {
  */
 function getLegalReference(letterType, state) {
     const references = {
-        gym_cancellation: `Under ${state || 'your state'} consumer protection laws, I have the right to cancel this membership.`,
-        insurance_claim_dispute: `According to ${state || 'state'} insurance regulations and the terms of my policy, this claim should be covered.`,
-        lease_violation: `Under ${state || 'state'} landlord-tenant law, landlords are required to maintain habitable living conditions.`,
-        employment_negotiation: `I believe these terms may not be in compliance with ${state || 'state'} employment law.`,
-        service_cancellation: `Consumer protection laws in ${state || 'your state'} provide for reasonable cancellation terms.`
+        gym_cancellation: `Under the Consumer Protection Act (CPA) and ${state || 'your state'} consumer protection laws, I have the right to cancel this membership.`,
+        insurance_claim_dispute: `According to the Policyholder Protection Rules (PPRs), the Short-term Insurance Act (STIA), and the principles of Treating Customers Fairly (TCF), this claim should be covered.`,
+        lease_violation: `Under the Rental Housing Act and ${state || 'state'} landlord-tenant law, landlords are required to maintain habitable living conditions.`,
+        employment_negotiation: `I believe these terms may not be in compliance with the Basic Conditions of Employment Act (BCEA) and ${state || 'state'} employment law.`,
+        service_cancellation: `The Consumer Protection Act (CPA) and laws in ${state || 'your state'} provide for reasonable cancellation terms.`
     };
 
     return references[letterType] || '';
@@ -256,12 +276,17 @@ function getLegalReference(letterType, state) {
  */
 function getLegalRights(letterType, state) {
     const rights = {
-        lease_violation: `As a tenant, I have the right to:
+        lease_violation: `As a tenant under the Rental Housing Act, I have the right to:
 - A habitable living space
 - Privacy and proper notice before entry
 - Protection from discrimination
 - Due process before eviction
-- Return of security deposit under specified conditions`
+- Return of security deposit under specified conditions`,
+        insurance_claim_dispute: `As a policyholder, I am protected by:
+- The Policyholder Protection Rules (PPRs)
+- The Short-term Insurance Act (STIA)
+- The Treating Customers Fairly (TCF) framework
+- The right to a clear and fair explanation for any denial`
     };
 
     return rights[letterType] || '';
