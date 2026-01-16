@@ -128,26 +128,26 @@ export function PricingPage() {
                 <div className="pricing-card featured" ref={premiumCardRef}>
                     <div className="badge">Most Popular</div>
                     <div className="promo-warning">⚠️ Promotional Price - Ending Soon!</div>
-                    <div className="plan-header">
+                    <div className="card-header">
                         <h2>Premium</h2>
-                        <div className="price">
-                            <span className="amount">R{pricing?.subscription?.amount}</span>
-                            <span className="period">one-time</span>
-                        </div>
-                        <div className="original-price">Regular price: R499 one-time</div>
-                        <div className="lifetime-badge">🎉 Lifetime Access Forever!</div>
+                        <div className="price">$13.00<span>/month</span></div>
+                        <div className="promo-text">Cancel Anytime</div>
                     </div>
-                    <ul className="features">
-                        {pricing?.subscription?.features.map((feature, idx) => (
-                            <li key={idx}>✓ {feature}</li>
-                        ))}
-                    </ul>
+                    <div className="card-features">
+                        <ul>
+                            <li><span className="check">✓</span> Unlimited Scans</li>
+                            <li><span className="check">✓</span> Advanced AI Analysis</li>
+                            <li><span className="check">✓</span> <strong>AI Dispute Letters</strong></li>
+                            <li><span className="check">✓</span> Priority Support</li>
+                            <li><span className="check">✓</span> Contract Storage</li>
+                        </ul>
+                    </div>
                     <button
-                        className="btn-plan btn-primary"
+                        className="choose-btn featured-btn"
                         onClick={() => handleCheckout('subscription')}
                         disabled={isPremium() || checkoutLoading === 'subscription'}
                     >
-                        {isPremium() ? 'Current Plan' : checkoutLoading === 'subscription' ? 'Loading...' : 'Lock In This Price'}
+                        {isPremium() ? 'Current Plan' : checkoutLoading === 'subscription' ? 'Loading...' : 'Get Premium'}
                     </button>
                 </div>
             </div>
