@@ -1,0 +1,47 @@
+[
+  {
+    "letterId": "641f1eca-3f04-4837-b2e1-b4faa4a4165e",
+    "userId": "9166d5a4-708b-4e8e-895f-93fe75e2c7e1",
+    "contractId": null,
+    "letterType": "gym_cancellation",
+    "generatedContent": "6Eil7ZmW8BndFdpRQJdL2Q==:h3MEmm1pJj6k0cjGZctO+gpr3g6JkxYUcHt2U6md4XRcFajKTQfgD6ZbhEQ/jP06vd7DWDdmMJ4r5TiA3yubfobkaWVCx0ypq7sJhX+fjLJtKlvDJT8ydBMJxqh0IKZTZv0+TY9yKxd6O3iq1EgxFc2dioOaUdEGl8n2GspTt8elNv1TUdtBlcn1SonlwY/+pM2u3VHtQXq5l14mjVNCZM/KXlzl0UySyDLowtHj9jP7Bh+6IXx58wBJid+UA398F31JtngJq6JKeW30IioUe8rieEexLWQWPFID7tbRVHOy1LczHfHTsEJpBQvPklSX260u9VY/FDj5ZMt5IbZD8KdBz+nIChAyzU+Q0/4Br+5JDOab2atzKtzyGoS41++7qo1CuJWAJxlN98dq92x3okp8RpIkWPJwhTxeh2OcpKl+H7kkS8Kj8mAcydzgqWn6SoC2XTHcDnDORZE/kTQaJpATy+XkAKSsj2iJiXDg7ozBl9VvsNwCq4S7Rmx/lAwPJ20EDDUdSc/wA/gW1DrzGgOVeEkm4mGP0ld1xWvIVvjzeVjjQFcbgYscvjE6w2prBcfoijKtKd3WSAM9NstWX6feJh4toWiHN23CVDdIAGiitLq98VBf0AmXqSEimB/Wuvh7DWEpOezmWAuIueE/1EFun269cNw1KFnLdMiI4+JdflEMRI0fhGKVqbWXtksb3jVAiUBtFWvNnOTMJX6b2g78SIV1jAne3WJ/8iGu683nkzoVKkK2MDIN87kzHuicprywBrJ0g6WeETZ3l1EBYsNWNU/8mMtSRiLU2Kd58dGqa1oQIuFEQBFIRSr4gAWdc+TP0n+eTOjD3DrHUSaZjNie7XiXX1UcS+tA9Ogynq5b6qncRVEXVdsbH8Dg8eesoXL48N9W3x1uHw0tndPGYBVjtPYJXpJ56YX7fp5OMq6KF3fp+/mGr/YImRUgNcUHmN+LQcjH1Ge80DeS3VhwkvYwzMdULOYIY7QCg/rBV7i11adE3E8WFX/XoXZWYhaJ",
+    "customizations": {
+      "subject": "Request for Membership Cancellation",
+      "userInfo": {
+        "name": "ﬁJohn Doe",
+        "email": "",
+        "phone": ""
+      },
+      "customData": {
+        "gym_name": "My Gym",
+        "reason": "Moving away",
+        "member_id": "12345",
+        "sign_date": "2023-01-01"
+      }
+    },
+    "createdAt": "2025-12-01T17:25:47.662Z"
+  },
+  {
+    "letterId": "4cb09f5a-5741-4353-ba7d-93b1a227c795",
+    "userId": "9166d5a4-708b-4e8e-895f-93fe75e2c7e1",
+    "contractId": null,
+    "letterType": "insurance_claim_dispute",
+    "generatedContent": "JOXvz7Nq2rleMGVM1VN+mQ==:Zq27xJB/dZjOtZzO26QsUngX10zVQC4MBYZwu+liPF1pEXcRDIGeEeXqQY89IW3REM0xKgJAq3m1YdaCd5Rxn3nfZFtQ6KWw7Gu5aK7HshKDptnJXCIP1NgmD7Juls8OHs+RT4YcCshiXirGPXceSqJ756GqzEFHMP4nNjzXP9qr5JUa8g6ggXjIXeT11BDk7fPGptxtFDqA+O4MRop6V2mHFlqI/lYiny0ifrNpuDLF2KIoXttNe6VY8p3683MD1N4YK1DMfcWnDwIk0UTFCzRUzSrtj13I0EROF+Puvn87g1vk9q1XSk3JjO6Z1iWgtYALbk50AIZU1Avd9Prj07Mt5hUfZ8m+RloS0fTuelXpyTlYiimC/YQxqQygMGZdlhT7iejlvM+ftg1eJWTMaZ1ztYrVbovtMEO6c+vn3gjYw+SIUgDgwbQbPp3j6ApvDH6LUbCbLRIJb1mpFzu2nc37iuJoMnxiwRyMUMtwzgd5SXg9MIGLjvVeQQ1gaT0uFFfA+H1g0Q/xNa+wjXF/MSlFv23UdUwMVnxODEDuE6mvzAfPJv37z/KNKypxjxMRVug/uedLGFYZyEczbPSOXxsPs/VuVXbSN+RozhEwZK7z9ixkP83sZBOwX0vRbr8LFh4jAnrrTkyXlNuKlk7zoNSlZregoWx289xIqG0RLUyB7VU62Az7pi1EEv7FV4YLHVEFzfOGU0eC41Zmoacp2FX8l08yhrQKjQu04q6dljFYREqr2aa6grCjI0jCKHP27eaIWTz+JE5AXmSorSIiU8bOdN7LCKnTmr4b5titdTVbHpOgQ2lyC69EuCVBk9ICkNVbM+ZtFy1hdWEgQVrtAC5ZupJ6ppWjYRd9yYveGsKIjsRUbCsUB96oKtOxv/Zjmb779DUumMw+aXTLOZyt7N/OQoW6UCa/ttH2H/maORhqJXCjnnJqSOa2oPNJ86dsu2kJ95POXZYmNc5i+Hz26pGsQUfCVu1+pc9p6oLCXx43U9I8rtf5FQJQPs7faA86oO8E9disQbxkSGa7Qx6+OUfjXyihQTUXGQZ0GYYtxLEahqsBaHv0kdDkaMYhGRqViM9vEd01hy0akGVrXD+9Tqmz7J3qMWKPdTe+44p7pnvWpFWFl9GjV5Evyc2s98U+YNPqDjqpJ88a1dhs0bbZwaIJPcrJh6Hd9TZwpLAdL8+Jz1MoTbLYZpwCOk6vHdJxvOJtAcbm58cTPDYfRbj2tuIAimHzyXN7mnPUdl83Jgy4RFWVeq3g36TI5tGzrRG6wbZkzvZhhiEH1aH5Gj6UJtq/97ltze4mzO1rkH1i+T2uoJFOs2ELdkB9CT36kn8fdz/90xiicuYXnNMkO+uMxtvgFRgAxv6jV14bG2jDLyAmqcBqleXKcgbmNEX6FD3VVNWGFNfbfRHrw0OaWJSXY9fLgqAR8YLPW4B28j6UlJK6e+5uDIFi+YGn0jh1nPdsWWvWMcntfv6gUb2ofMhHBtVhSmeD1N/RRf4zpJ2D7GvL2aLsllGBZcnkSvmHZhtwQ2D/MDJEd3eo13c+HZ6KT3T9xFudfkQfZi/SlgF8VtGgXXyrZ7YTbV9Tjx4LMYAUOefDs9+PMNkOTOjYgwKDUalh/tc7LmhXtjrfkZyUYVi5ZMJpGENMKhD4kGe0mTECY9VbPuLOwdxj8sP5vmJ3nLYdFwOCXT6XS1tn8AMjnw7n6x0yvCBNjFsR1JRNoMnMTbkQ+q25AA99wD1BDRWzwPtLfmOJRTvGQ1G0sWD6Pouch4anZBrLHJuH/f+SygYei3ePGDG+PiEPvrCU5Tp/Gbd93RCxyVVxrju5stjD+lJRdIe5hb6H7mBJfaMrvd2wnKA/voqKclp3cArdYh6bI42kM4YopPEFMhtGLyiB5sk=",
+    "customizations": {
+      "subject": "Formal Dispute of Claim Denial",
+      "userInfo": {
+        "name": "fred",
+        "email": "fangasisye@gmail.com",
+        "phone": "0795774877"
+      },
+      "customData": {
+        "insurance_company": "dischem kaelo",
+        "policy_number": "dh klj",
+        "claim_number": "12553",
+        "claim_date": "2025-11-03",
+        "situation": "heres what they said to me Good day,\n\nThank you for contacting the claims department.\n\nKindly be advised that the attached claim for MORNINGMED CLINIC, service date 2025/06/15 has been declined payment with reason code  03 - Authorisation required.\n\nUpon review, it has been determined that  Pre-authorisation  from the 3rd GP visit is required and this was the 3rd visit.\n\nShould you have any questions or require further clarification regarding this matter, please do not hesitate to reach out to us. We are here to assist you in any way possible.\n\n\nRegards\n\nPalesa Khokhone"
+      }
+    },
+    "createdAt": "2025-12-01T19:21:16.188Z"
+  }
+]

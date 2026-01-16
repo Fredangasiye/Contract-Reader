@@ -164,13 +164,39 @@ function UploadForm({ onAnalysisComplete }) {
                 <div className="drop-zone-content">
                     {file ? (
                         <div className="file-selected">
-                            <span className="file-selected-icon">{getFileIcon(file.name)}</span>
-                            <span>{file.name}</span>
+                            <div className="file-info">
+                                <span className="file-selected-icon">{getFileIcon(file.name)}</span>
+                                <span>{file.name}</span>
+                            </div>
+                            <button
+                                type="button"
+                                className="change-doc-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setFile(null);
+                                    setError(null);
+                                }}
+                            >
+                                Change
+                            </button>
                         </div>
                     ) : url ? (
                         <div className="file-selected">
-                            <span className="file-selected-icon">🔗</span>
-                            <span>{url}</span>
+                            <div className="file-info">
+                                <span className="file-selected-icon">🔗</span>
+                                <span>{url}</span>
+                            </div>
+                            <button
+                                type="button"
+                                className="change-doc-btn"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setUrl('');
+                                    setError(null);
+                                }}
+                            >
+                                Change
+                            </button>
                         </div>
                     ) : (
                         <>

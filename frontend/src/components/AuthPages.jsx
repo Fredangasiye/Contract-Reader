@@ -10,6 +10,8 @@ export function LoginPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showDemo, setShowDemo] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+    const [resetSent, setResetSent] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { login } = useAuth();
@@ -36,6 +38,66 @@ export function LoginPage() {
             setLoading(false);
         }
     };
+
+    const handleForgotPassword = (e) => {
+        e.preventDefault();
+        if (!email) {
+            setError('Please enter your email address.');
+            return;
+        }
+        setResetSent(true);
+        setError('');
+    };
+
+    if (showForgotPassword) {
+        return (
+            <div className="auth-container">
+                <div className="auth-card">
+                    <h1>Reset Password</h1>
+                    <p className="auth-subtitle">Enter your email to receive a reset link</p>
+
+                    {error && <div className="error-message">{error}</div>}
+                    {resetSent && (
+                        <div className="success-message">
+                            If an account exists for {email}, a password reset link has been sent.
+                        </div>
+                    )}
+
+                    {!resetSent ? (
+                        <form onSubmit={handleForgotPassword} className="auth-form">
+                            <div className="form-group">
+                                <label htmlFor="reset-email">Email</label>
+                                <input
+                                    type="email"
+                                    id="reset-email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    placeholder="you@example.com"
+                                />
+                            </div>
+                            <button type="submit" className="btn-primary">
+                                Send Reset Link
+                            </button>
+                        </form>
+                    ) : null}
+
+                    <p className="auth-footer">
+                        <button
+                            className="link-btn"
+                            onClick={() => {
+                                setShowForgotPassword(false);
+                                setResetSent(false);
+                                setError('');
+                            }}
+                        >
+                            Back to Login
+                        </button>
+                    </p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="auth-container">
@@ -69,6 +131,18 @@ export function LoginPage() {
                             placeholder="••••••••"
                             minLength={8}
                         />
+                        <div className="forgot-password-link">
+                            <button
+                                type="button"
+                                className="link-btn"
+                                onClick={() => {
+                                    setShowForgotPassword(true);
+                                    setError('');
+                                }}
+                            >
+                                Forgot password?
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" className="btn-primary" disabled={loading}>

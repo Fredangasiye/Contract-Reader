@@ -1,0 +1,22 @@
+[
+  {
+    "userId": "edbcb284-99d9-4ca1-b345-e47904a02bcb",
+    "email": "fangasisye@gmail.com",
+    "passwordHash": "$2b$10$TVnm8c1Ery6VFLY8NwqJXujz/SaL6xT1pEQ9J4CI3zVbV3UI4rkNO",
+    "subscriptionTier": "free",
+    "subscriptionExpiry": null,
+    "scanCount": 0,
+    "createdAt": "2025-11-26T22:24:04.588Z",
+    "stripeCustomerId": null
+  },
+  {
+    "userId": "9166d5a4-708b-4e8e-895f-93fe75e2c7e1",
+    "email": "demo@example.com",
+    "passwordHash": "$2b$10$4XXYoGFP6CIasrNLF3Fms.OalMCx.iRhx71IVPIbbnYTjheBYid7K",
+    "subscriptionTier": "premium",
+    "subscriptionExpiry": "2026-11-30T19:03:40.932Z",
+    "scanCount": 0,
+    "stripeCustomerId": null,
+    "createdAt": "2025-11-30T19:03:40.933Z"
+  }
+]

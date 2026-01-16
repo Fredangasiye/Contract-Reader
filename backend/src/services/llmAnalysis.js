@@ -8,7 +8,13 @@ const axios = require('axios');
 // Initialize LLM client
 const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').trim();
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
-const DEFAULT_MODEL = 'mistralai/mistral-7b-instruct';
+
+// Model Configuration with Fallbacks
+const MODELS = [
+    'google/gemini-2.0-flash-exp:free', // Primary: Fast, smart, free
+    'meta-llama/llama-3-8b-instruct:free', // Fallback 1: Good general purpose
+    'mistralai/mistral-7b-instruct:free'   // Fallback 2: Original default
+];
 
 /**
  * Generate a plain-language summary of the contract
@@ -22,19 +28,35 @@ async function generateSummary(text) {
     }
 
     try {
-        const prompt = `You are a legal contract analyst. Summarize the following contract in plain language.
+        // First, check if it's actually a contract
+        const checkPrompt = `Analyze the following text and determine if it is a legal contract (like a lease, insurance policy, employment agreement, etc.).
         
-CRITICAL: Highlight whole phrases or sentences that are most important for the user by wrapping them in <strong> tags. 
-Do NOT just bold random single words. Bold meaningful clauses, limits, or obligations.
+        Text excerpt:
+        ${text.substring(0, 1000)}
+        
+        Respond with ONLY "YES" if it is a contract, or "NO: [Reason]" if it is not (e.g., "NO: Meeting Minutes", "NO: News Article").`;
 
-Keep the summary concise (3-5 sentences).
+        const checkResponse = await callLLMWithFallback(checkPrompt, { maxTokens: 50 });
 
-Contract text:
-${text.substring(0, 4000)}
+        let contextPrefix = "";
+        if (checkResponse && !checkResponse.toUpperCase().startsWith("YES")) {
+            console.warn(`Document might not be a contract: ${checkResponse}`);
+            contextPrefix = `WARNING: The uploaded document appears to be ${checkResponse.replace('NO:', '').trim()}, NOT a standard legal contract. Analyze it as best as possible in that context.\n\n`;
+        }
 
-Summary:`;
+        const prompt = `${contextPrefix}You are a legal contract analyst. Summarize the following document in plain language.
+        
+        CRITICAL: Highlight whole phrases or sentences that are most important for the user by wrapping them in <strong> tags. 
+        Do NOT just bold random single words. Bold meaningful clauses, limits, or obligations.
+        
+        Keep the summary concise (3-5 sentences).
+        
+        Document text:
+        ${text.substring(0, 4000)}
+        
+        Summary:`;
 
-        const response = await callLLM(prompt, { maxTokens: 400 });
+        const response = await callLLMWithFallback(prompt, { maxTokens: 400 });
         return response.trim();
 
     } catch (error) {
@@ -66,7 +88,7 @@ async function enhanceRedFlags(text, rulesFlags) {
             .map(f => `- ${f.title}: ${f.evidence}`)
             .join('\n');
 
-        const prompt = `You are a legal contract analyst. Review these detected red flags in an insurance contract and provide additional context or warnings if needed.
+        const prompt = `You are a legal contract analyst. Review these detected red flags and provide additional context or warnings.
 
 Detected issues:
 ${flagSummary}
@@ -77,7 +99,7 @@ ${text.substring(0, 2000)}
 For each flag, confirm if it's a genuine concern and add any additional insights. Respond in JSON format:
 [{"id": "flag_id", "additional_insight": "...", "confirmed": true/false}]`;
 
-        const response = await callLLM(prompt, { maxTokens: 500 });
+        const response = await callLLMWithFallback(prompt, { maxTokens: 500 });
 
         // Try to parse JSON response
         // Helper to extract JSON from potential markdown/text
@@ -127,27 +149,21 @@ async function detectBlindSpots(text) {
     }
 
     try {
-        const prompt = `You are a legal contract analyst specializing in insurance contracts. Analyze this contract for hidden traps, unusual clauses, or concerning terms that might not be obvious.
+        const prompt = `You are a legal contract analyst. Analyze this document for hidden traps, unusual clauses, or concerning terms that might not be obvious.
 
-Contract text:
+Document text:
 ${text.substring(0, 3000)}
 
 Identify any concerning clauses and respond in JSON format:
 [{"issue": "brief title", "explanation": "why it's concerning", "evidence": "exact quote", "severity": 0-100}]
 
-CRITICAL: Focus on common reasons for claim rejections and payout issues:
-- Payout rejection triggers (e.g., strict reporting windows, maintenance obligations)
-- Over-insuring (paying for cover you can't claim) and Under-insuring (average clause)
-- Replacement value vs. Cash payout (market value) terms
-- Unusual exclusions that lead to claim denials
-- Hidden fees or ambiguous terms
+CRITICAL: Focus on common reasons for claim rejections, payout issues, or unfair obligations.
 
 Respond with JSON array only:`;
 
-        const response = await callLLM(prompt, { maxTokens: 600 });
+        const response = await callLLMWithFallback(prompt, { maxTokens: 600 });
 
         try {
-            // Helper to extract JSON
             const extractJson = (str) => {
                 const startIndex = str.indexOf('[');
                 const endIndex = str.lastIndexOf(']');
@@ -182,66 +198,6 @@ Respond with JSON array only:`;
 }
 
 /**
- * Call LLM API
- * @param {string} prompt - Prompt text
- * @param {Object} options - Options
- * @returns {Promise<string>} - Response text
- */
-async function callLLM(prompt, options = {}) {
-    const { maxTokens = 500, temperature = 0.3 } = options;
-
-    try {
-        console.log(`Calling OpenRouter with model: ${DEFAULT_MODEL}`);
-        const response = await axios.post(
-            `${OPENROUTER_BASE_URL}/chat/completions`,
-            {
-                model: DEFAULT_MODEL,
-                messages: [
-                    { role: 'user', content: prompt }
-                ],
-                max_tokens: maxTokens,
-                temperature
-            },
-            {
-                headers: {
-                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://frontend-nine-alpha-95.vercel.app',
-                    'X-Title': 'Contract Reader'
-                },
-                timeout: 30000
-            }
-        );
-
-        return response.data.choices[0].message.content;
-    } catch (error) {
-        if (error.response) {
-            console.error('OpenRouter API Error:', error.response.status, JSON.stringify(error.response.data));
-            // Mask the key in the error message if we re-throw
-            const maskedKey = OPENROUTER_API_KEY ? `${OPENROUTER_API_KEY.substring(0, 10)}...` : 'MISSING';
-            throw new Error(`OpenRouter failed (${error.response.status}) with key ${maskedKey}: ${JSON.stringify(error.response.data)}`);
-        }
-        console.error('LLM Request Error:', error.message);
-        throw error;
-    }
-}
-
-/**
- * Stub summary generator
- * @param {string} text 
- * @returns {string}
- */
-function generateSummaryStub(text) {
-    const wordCount = text.split(/\s+/).length;
-    const hasNumbers = /\d/.test(text);
-
-    return `[STUB LLM SUMMARY] This contract contains approximately ${wordCount} words. ` +
-        `${hasNumbers ? 'It includes <strong>specific monetary amounts and limits</strong>. ' : ''}` +
-        `To enable <strong>real LLM analysis</strong>, set the OPENROUTER_API_KEY environment variable. ` +
-        `The contract should be <strong>reviewed carefully for coverage limits, exclusions, and obligations</strong>.`;
-}
-
-/**
  * Generate complete letter content based on contract and user situation
  * @param {string} contractText - Contract text
  * @param {string} letterType - Type of letter
@@ -260,7 +216,7 @@ async function generateLetterContent(contractText, letterType, userSituation, cu
         // Build context from customData
         const contextDetails = buildContextDetails(letterType, customData);
 
-        const prompt = `You are a professional legal letter writer in South Africa. Write a COMPLETE, formal dispute letter based on the information provided.
+        const prompt = `You are an expert legal advocate in South Africa. Write a LEGALLY ENFORCEABLE, high-stakes formal dispute letter.
 
 LETTER TYPE: ${letterType.replace(/_/g, ' ').toUpperCase()}
 
@@ -270,45 +226,114 @@ ${userSituation}
 ${contextDetails}
 
 CONTRACT EXCERPT:
-${contractText.substring(0, 3500)}
+${contractText.substring(0, 4000)}
 
 INSTRUCTIONS:
-1. Write a COMPLETE formal letter from start to finish
-2. Use proper business letter format
-3. Start with "Dear [appropriate recipient],"
-4. Include ALL necessary sections:
-   - Opening statement of purpose
-   - Detailed explanation of the situation
-   - Reference to SPECIFIC contract clauses (quote exact text if possible)
-   - Legal arguments using South African law:
-     * Consumer Protection Act (CPA) for consumer disputes
-     * Policyholder Protection Rules (PPRs) for insurance
-     * Short-term Insurance Act (STIA) for insurance
-     * Treating Customers Fairly (TCF) principles
-     * Basic Conditions of Employment Act (BCEA) for employment
-     * Rental Housing Act for leases
-   - Clear demands or requests
-   - Deadline for response (typically 10-30 business days)
-   - Professional closing
-5. End with "Sincerely," followed by the user's name
-6. Be persuasive, professional, and firm
-7. Reference specific contract terms and explain why they are unfair, illegal, or not applicable
-8. Make the letter ready to send - no placeholders or [brackets]
+1.  **GOAL**: Write a letter with the HIGHEST PROBABILITY OF WINNING the dispute.
+2.  **CITATIONS**: You MUST quote specific clauses from the contract text provided. Use quotation marks and reference the clause number if available.
+3.  **LEGAL FRAMEWORK**: Apply South African law aggressively:
+    *   **Consumer Protection Act (CPA)**: Cite Section 14 (Cancellation), Section 40 (Unconscionable Conduct), or Section 48 (Unfair Terms) where applicable.
+    *   **Insurance**: Cite Policyholder Protection Rules (PPRs) and Short-term Insurance Act (STIA). Mention "Treating Customers Fairly" (TCF) outcomes.
+    *   **Rental**: Cite the Rental Housing Act and Unfair Practice Regulations.
+4.  **TONE**: Professional, firm, authoritative, and demanding. Do not be passive.
+5.  **STRUCTURE**:
+    *   **Header**: Standard business letter format.
+    *   **Opening**: State the purpose clearly (e.g., "Formal Notice of Dispute").
+    *   **The Facts**: Briefly summarize the situation.
+    *   **The Contract**: Quote the specific contract terms that support the user OR explain why the opposing party's reliance on a term is unlawful.
+    *   **The Law**: Apply the relevant SA legal acts to override unfair contract terms.
+    *   **The Demand**: State exactly what is required (refund, cancellation, payout) and a deadline (e.g., 7 days).
+    *   **The Consequence**: Mention further action (Ombudsman, NCC, legal counsel) if demands are not met.
+6.  **NO PLACEHOLDERS**: Do NOT use brackets like [Insert Date] or [Specific concerns]. Fill every section based on the provided data or logical inference.
 
 USER INFORMATION:
-Name: ${userInfo.name || 'The Policyholder'}
+Name: ${userInfo.name || 'The Consumer'}
 Email: ${userInfo.email || ''}
 Phone: ${userInfo.phone || ''}
 Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
 
 Write the complete letter now:`;
 
-        const response = await callLLM(prompt, { maxTokens: 1200, temperature: 0.6 });
+        const response = await callLLMWithFallback(prompt, { maxTokens: 1500, temperature: 0.7 });
         return response.trim();
 
     } catch (error) {
         console.error('LLM complete letter generation error:', error.message);
         return null;
+    }
+}
+
+/**
+ * Call LLM API with Fallback Logic
+ * @param {string} prompt - Prompt text
+ * @param {Object} options - Options
+ * @returns {Promise<string>} - Response text
+ */
+async function callLLMWithFallback(prompt, options = {}) {
+    let lastError = null;
+
+    for (const model of MODELS) {
+        try {
+            console.log(`🤖 Calling OpenRouter with model: ${model}`);
+            const response = await callLLM(prompt, { ...options, model });
+            return response; // Success!
+        } catch (error) {
+            console.warn(`⚠️ Model ${model} failed: ${error.message}`);
+            lastError = error;
+            // Continue to next model
+        }
+    }
+
+    // If all models fail
+    console.error('❌ All LLM models failed.');
+    throw lastError || new Error('All LLM models failed');
+}
+
+/**
+ * Call LLM API (Single Request)
+ * @param {string} prompt - Prompt text
+ * @param {Object} options - Options
+ * @returns {Promise<string>} - Response text
+ */
+async function callLLM(prompt, options = {}) {
+    const { maxTokens = 500, temperature = 0.3, model = MODELS[0] } = options;
+
+    try {
+        const response = await axios.post(
+            `${OPENROUTER_BASE_URL}/chat/completions`,
+            {
+                model: model,
+                messages: [
+                    { role: 'user', content: prompt }
+                ],
+                max_tokens: maxTokens,
+                temperature
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
+                    'Content-Type': 'application/json',
+                    'HTTP-Referer': 'https://frontend-nine-alpha-95.vercel.app',
+                    'X-Title': 'Contract Reader'
+                },
+                timeout: 45000 // Increased timeout for better reliability
+            }
+        );
+
+        if (!response.data || !response.data.choices || response.data.choices.length === 0) {
+            throw new Error('Invalid response format from LLM provider');
+        }
+
+        return response.data.choices[0].message.content;
+    } catch (error) {
+        if (error.response) {
+            console.error('OpenRouter API Error:', error.response.status, JSON.stringify(error.response.data));
+            // Mask the key in the error message if we re-throw
+            const maskedKey = OPENROUTER_API_KEY ? `${OPENROUTER_API_KEY.substring(0, 10)}...` : 'MISSING';
+            throw new Error(`OpenRouter failed (${error.response.status}) with key ${maskedKey}: ${JSON.stringify(error.response.data)}`);
+        }
+        console.error('LLM Request Error:', error.message);
+        throw error;
     }
 }
 
@@ -351,6 +376,21 @@ function buildContextDetails(letterType, customData) {
     }
 
     return details;
+}
+
+/**
+ * Stub summary generator
+ * @param {string} text 
+ * @returns {string}
+ */
+function generateSummaryStub(text) {
+    const wordCount = text.split(/\s+/).length;
+    const hasNumbers = /\d/.test(text);
+
+    return `[STUB LLM SUMMARY] This contract contains approximately ${wordCount} words. ` +
+        `${hasNumbers ? 'It includes <strong>specific monetary amounts and limits</strong>. ' : ''}` +
+        `To enable <strong>real LLM analysis</strong>, set the OPENROUTER_API_KEY environment variable. ` +
+        `The contract should be <strong>reviewed carefully for coverage limits, exclusions, and obligations</strong>.`;
 }
 
 /**
@@ -407,7 +447,7 @@ For gym/service contracts:
 
 Return ONLY the JSON object, no other text:`;
 
-        const response = await callLLM(prompt, { maxTokens: 300, temperature: 0.2 });
+        const response = await callLLMWithFallback(prompt, { maxTokens: 300, temperature: 0.2 });
 
         // Extract JSON from response
         const extractJson = (str) => {

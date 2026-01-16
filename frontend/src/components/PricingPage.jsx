@@ -103,20 +103,20 @@ export function PricingPage() {
 
                 {/* Per-Scan Plan */}
                 <div className="pricing-card">
-                    <div className="plan-header">
+                    <div className="card-header">
                         <h2>Pay Per Scan</h2>
-                        <div className="price">
-                            <span className="amount">R{pricing?.perScan?.amount}</span>
-                            <span className="period">/scan</span>
-                        </div>
+                        <div className="price">$0.61<span>/scan</span></div>
                     </div>
-                    <ul className="features">
-                        {pricing?.perScan?.features.map((feature, idx) => (
-                            <li key={idx}>✓ {feature}</li>
-                        ))}
-                    </ul>
+                    <div className="card-features">
+                        <ul>
+                            <li><span className="check">✓</span> Instant AI Analysis</li>
+                            <li><span className="check">✓</span> Red Flag Detection</li>
+                            <li><span className="check">✓</span> Plain English Summary</li>
+                            <li><span className="check">✓</span> Basic Export</li>
+                        </ul>
+                    </div>
                     <button
-                        className="btn-plan btn-secondary"
+                        className="choose-btn"
                         onClick={() => handleCheckout('one-time')}
                         disabled={checkoutLoading === 'one-time'}
                     >

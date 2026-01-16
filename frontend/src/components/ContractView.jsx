@@ -105,7 +105,7 @@ function ContractView({ data, onReset }) {
                                 <h3>Need Help?</h3>
                                 <p>Generate a professional dispute letter to address these issues</p>
                                 {user && isPremium() ? (
-                                    <button onClick={() => navigate('/letters/generate')} className="action-btn">
+                                    <button onClick={() => navigate('/letters/generate', { state: { analysisData: data } })} className="action-btn">
                                         Generate Letter
                                     </button>
                                 ) : (
@@ -127,6 +127,37 @@ function ContractView({ data, onReset }) {
                     )}
                 </>
             )}
+
+            <div className="section avoidance-section">
+                <h3>🛡️ How to Avoid Claim Rejection</h3>
+                <p className="section-subtitle">Common insurance payout triggers to watch for:</p>
+                <div className="avoidance-grid">
+                    <div className="avoidance-item">
+                        <strong>Strict Reporting Windows</strong>
+                        <p>Late reporting (often &gt;24-48h) is a top cause for rejection.</p>
+                    </div>
+                    <div className="avoidance-item">
+                        <strong>Maintenance Obligations</strong>
+                        <p>Neglecting wear and tear can void your entire coverage.</p>
+                    </div>
+                    <div className="avoidance-item">
+                        <strong>Unoccupied Premises</strong>
+                        <p>Absences over 30 days often suspend theft/water cover.</p>
+                    </div>
+                    <div className="avoidance-item">
+                        <strong>Reasonable Precautions</strong>
+                        <p>Vague terms often used to deny claims for "negligence".</p>
+                    </div>
+                    <div className="avoidance-item">
+                        <strong>Security Requirements</strong>
+                        <p>Alarms and window bars must be active at the time of loss.</p>
+                    </div>
+                    <div className="avoidance-item">
+                        <strong>Average Clause</strong>
+                        <p>Under-insuring leads to only partial payouts on claims.</p>
+                    </div>
+                </div>
+            </div>
 
             <div className="section text-section">
                 <h3>📄 Full Contract Text</h3>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { getLetterTemplates, generateLetter, getUserLetters, getLetter } from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
@@ -7,6 +7,13 @@ import UploadForm from './UploadForm';
 import './LetterGenerator.css';
 
 export function LetterGenerator() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { user, isPremium } = useAuth();
+
+    // Restore analysis data from navigation state if available
+    const initialAnalysis = location.state?.analysisData || null;
+
     const [step, setStep] = useState(1);
     const [selectedTemplate, setSelectedTemplate] = useState('');
     const [userInfo, setUserInfo] = useState({ name: '', email: '', phone: '' });
@@ -14,9 +21,7 @@ export function LetterGenerator() {
     const [generatedLetter, setGeneratedLetter] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [contractAnalysis, setContractAnalysis] = useState(null);
-    const navigate = useNavigate();
-    const { user, isPremium } = useAuth();
+    const [contractAnalysis, setContractAnalysis] = useState(initialAnalysis);
 
     const TEMPLATES = [
         { id: 'gym_cancellation', name: 'Gym Cancellation', icon: '🏋️', subject: 'Membership Cancellation Request', description: 'Cancel gym memberships due to relocation, medical issues, or unfair terms.' },
@@ -146,12 +151,12 @@ export function LetterGenerator() {
             <div className="step-line"></div>
             <div className={`step ${step >= 3 ? 'active' : ''} ${step > 3 ? 'completed' : ''}`}>
                 <div className="step-number">{step > 3 ? '✓' : '3'}</div>
-                <div className="step-label">Info</div>
+                <div className="step-label">Details</div>
             </div>
             <div className="step-line"></div>
             <div className={`step ${step >= 4 ? 'active' : ''} ${step > 4 ? 'completed' : ''}`}>
                 <div className="step-number">{step > 4 ? '✓' : '4'}</div>
-                <div className="step-label">Details</div>
+                <div className="step-label">Info</div>
             </div>
         </div>
     );
@@ -199,6 +204,14 @@ export function LetterGenerator() {
             <div className="generator-header">
                 <h1>Letter Generator</h1>
                 <p>Create professional dispute letters in minutes</p>
+                {contractAnalysis && (
+                    <button
+                        onClick={() => navigate('/', { state: { analysisData: contractAnalysis } })}
+                        className="back-to-analysis-link"
+                    >
+                        ← Back to Analysis
+                    </button>
+                )}
             </div>
 
             {renderStepIndicator()}
@@ -291,58 +304,8 @@ export function LetterGenerator() {
                     </div>
                 )}
 
-                {/* Step 3: User Info */}
+                {/* Step 3: Details */}
                 {step === 3 && (
-                    <div className="form-section fade-in">
-                        <h3>Your Information</h3>
-                        <div className="form-grid">
-                            <div className="form-group">
-                                <label>Your Name *</label>
-                                <input
-                                    type="text"
-                                    value={userInfo.name}
-                                    onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
-                                    required
-                                    placeholder="John Doe"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Email</label>
-                                <input
-                                    type="email"
-                                    value={userInfo.email}
-                                    onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
-                                    placeholder="john@example.com"
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label>Phone</label>
-                                <input
-                                    type="tel"
-                                    value={userInfo.phone}
-                                    onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
-                                    placeholder="(555) 123-4567"
-                                />
-                            </div>
-                        </div>
-                        <div className="wizard-actions">
-                            <button type="button" className="btn-secondary" onClick={handleBack}>
-                                ← Back
-                            </button>
-                            <button
-                                type="button"
-                                className="btn-primary"
-                                disabled={!userInfo.name}
-                                onClick={handleNext}
-                            >
-                                Next Step →
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* Step 4: Details */}
-                {step === 4 && (
                     <div className="form-section fade-in">
                         <h3>Letter Details</h3>
 
@@ -405,6 +368,55 @@ export function LetterGenerator() {
                                     )}
                                 </div>
                             ))}
+                        </div>
+                        <div className="wizard-actions">
+                            <button type="button" className="btn-secondary" onClick={handleBack}>
+                                ← Back
+                            </button>
+                            <button
+                                type="button"
+                                className="btn-primary"
+                                onClick={handleNext}
+                            >
+                                Next Step →
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* Step 4: User Info */}
+                {step === 4 && (
+                    <div className="form-section fade-in">
+                        <h3>Your Information</h3>
+                        <div className="form-grid">
+                            <div className="form-group">
+                                <label>Your Name *</label>
+                                <input
+                                    type="text"
+                                    value={userInfo.name}
+                                    onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                                    required
+                                    placeholder="John Doe"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Email</label>
+                                <input
+                                    type="email"
+                                    value={userInfo.email}
+                                    onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+                                    placeholder="john@example.com"
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Phone</label>
+                                <input
+                                    type="tel"
+                                    value={userInfo.phone}
+                                    onChange={(e) => setUserInfo({ ...userInfo, phone: e.target.value })}
+                                    placeholder="(555) 123-4567"
+                                />
+                            </div>
                         </div>
                         <div className="wizard-actions">
                             <button type="button" className="btn-secondary" onClick={handleBack}>

@@ -1,0 +1,226 @@
+[
+  {
+    "adviceId": "gym-red-flags",
+    "contractType": "gym",
+    "section": "red-flags",
+    "title": "Red Flags in Gym Contracts",
+    "content": "🚩 **Long-term commitment** (12-24 months) with high cancellation fees\n\n🚩 **Automatic renewal** clauses that extend the contract without your explicit consent\n\n🚩 **Price increase clauses** allowing the gym to raise fees at any time\n\n🚩 **Liability waivers** attempting to absolve the gym of all responsibility for injuries\n\n🚩 **Difficult cancellation procedures** (e.g., requiring certified mail or in-person visits)\n\n🚩 **Maintenance fees** charged annually on top of monthly dues",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "gym-key-terms",
+    "contractType": "gym",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **Cooling-off Period**: A short window (usually 5 days under the CPA) after signing where you can cancel without penalty.\n\n📝 **Initiation Fee**: A one-time fee charged when joining.\n\n📝 **Pro-rata**: Partial payment for the portion of the month you used before the billing cycle starts.\n\n📝 **Debit Order Authority**: Permission for the gym to automatically withdraw funds from your account.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "gym-rights",
+    "contractType": "gym",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Right to Cancel**: Under the Consumer Protection Act (CPA), you can cancel a fixed-term contract by giving 20 business days' notice. The gym may charge a reasonable cancellation penalty, but they cannot demand the full outstanding balance.\n\n⚖️ **Right to Fair Terms**: Terms that are excessively one-sided or unfair may be unenforceable.\n\n⚖️ **Right to Disclosure**: The total cost of credit and all fees must be clearly disclosed upfront.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "gym-negotiation",
+    "contractType": "gym",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Ask for a month-to-month option**: It might cost slightly more but gives you freedom to leave.\n\n💡 **Waive the joining fee**: Sales consultants often have the discretion to waive this to close a deal.\n\n💡 **Check for corporate discounts**: Your employer or medical aid (e.g., Discovery Vitality) might offer significant subsidies.\n\n💡 **Request a trial**: Ask for a 1-week free trial before signing anything to test the facilities.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-medical-red-flags",
+    "contractType": "insurance-medical",
+    "section": "red-flags",
+    "title": "Red Flags in Medical Insurance",
+    "content": "🚩 **General Waiting Periods**: A 3-month period where no claims are paid, even for emergencies in some low-cost plans\n\n🚩 **Condition-Specific Waiting Periods**: 12-month exclusions for pre-existing conditions\n\n🚩 **Late Joiner Penalties**: Permanent extra fees added to your premium if you join a medical aid later in life\n\n🚩 **Network Restrictions**: Being forced to use specific hospitals or doctors to avoid co-payments\n\n🚩 **Co-payments**: Upfront fees you must pay for certain procedures (e.g., MRI scans, surgery)\n\n🚩 **PMB Exclusions**: Plans that try to limit Prescribed Minimum Benefits (which is illegal for Medical Schemes but common in Medical Insurance products)",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-medical-key-terms",
+    "contractType": "insurance-medical",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **PMB (Prescribed Minimum Benefits)**: A list of chronic conditions and emergencies that all Medical Schemes MUST cover by law, regardless of your plan type.\n\n📝 **Medical Scheme vs. Health Insurance**: Medical Schemes are non-profit and regulated to cover PMBs. Health Insurance is a risk product that pays out fixed amounts and may not cover comprehensive care.\n\n📝 **Gap Cover**: A separate policy that pays the difference between what the doctor charges and what your medical aid pays.\n\n📝 **Day-to-Day Benefits**: Funds allocated for GP visits and medicine, often limited.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-medical-rights",
+    "contractType": "insurance-medical",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Open Enrollment**: Medical Schemes cannot refuse you membership based on your health status (though they can impose waiting periods).\n\n⚖️ **Emergency Treatment**: You cannot be refused emergency medical treatment.\n\n⚖️ **PMB Coverage**: Schemes must pay for PMB conditions in full if you use a Designated Service Provider (DSP).",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-medical-negotiation",
+    "contractType": "insurance-medical",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Choose a Network Plan**: You can save 15-20% on premiums by agreeing to use specific hospitals.\n\n💡 **Review Annually**: Downgrade your plan if you are healthy and upgrade only when you plan a family or anticipate surgery.\n\n💡 **Use State Facilities**: For PMBs, if your scheme's designated provider is unavailable, they must pay for an alternative provider.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-car-red-flags",
+    "contractType": "insurance-car",
+    "section": "red-flags",
+    "title": "Red Flags in Car Insurance",
+    "content": "🚩 **Commercial Use Exclusions**: Not being covered if you use your car for work (e.g., sales calls, delivery) without declaring it\n\n🚩 **Unnamed Driver Exclusions**: No cover if anyone other than the nominated driver is behind the wheel\n\n🚩 **Vague 'Reasonable Precautions' Clause**: Insurer refusing to pay because you left keys in the ignition or didn't lock the gate\n\n🚩 **Betterment Clauses**: Being asked to contribute to repairs if new parts increase the car's value\n\n�� **Tracking Device Requirement**: Cover suspended if your tracker isn't working or tested regularly",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-car-key-terms",
+    "contractType": "insurance-car",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **Excess (First Amount Payable)**: The amount you must pay towards a claim before the insurer pays the rest.\n\n📝 **Retail Value**: The average price a dealer would sell your car for (usually higher than Market or Trade value).\n\n📝 **Comprehensive Cover**: Covers theft, fire, and accident damage to your car AND third parties.\n\n📝 **Third Party Only**: Only covers damage you cause to other people's property.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-car-rights",
+    "contractType": "insurance-car",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Right to Reasons**: If a claim is rejected, the insurer must provide written reasons.\n\n⚖️ **Ombudsman**: You have the right to escalate unresolved disputes to the Ombudsman for Short-Term Insurance (OSTI).\n\n⚖️ **Fair Value**: You should be paid out the reasonable market value of the vehicle at the time of loss.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "insurance-car-negotiation",
+    "contractType": "insurance-car",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Adjust Your Excess**: Increasing your voluntary excess can significantly lower your monthly premium.\n\n💡 **Update Your Details**: Secure parking, less mileage, or getting married can lower your risk profile and premium.\n\n💡 **Combine Policies**: Insuring your car and home contents with the same provider often qualifies for a discount.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "rental-red-flags",
+    "contractType": "rental",
+    "section": "red-flags",
+    "title": "Red Flags in Rental Agreements",
+    "content": "🚩 **Illegal Deposit Deductions**: Clauses allowing the landlord to keep the deposit for 'fair wear and tear'\n\n🚩 **Unannounced Inspections**: Landlord reserving the right to enter without reasonable notice\n\n🚩 **Maintenance Shifts**: Making the tenant responsible for structural repairs (e.g., geyser, roof)\n\n🚩 **Penalty Clauses**: Excessive penalties for late payment (e.g., 10% per day)\n\n🚩 **Automatic Renewal**: Lease renewing for another full year if you forget to give notice",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "rental-key-terms",
+    "contractType": "rental",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **Deposit**: Security money held by the landlord. It MUST be invested in an interest-bearing account for the tenant's benefit.\n\n📝 **Fair Wear and Tear**: Normal deterioration from living in the property (e.g., faded paint) which you are NOT liable for.\n\n📝 **Incoming Inspection**: A mandatory check of the property's condition before you move in. If not done, the landlord cannot claim for damages later.\n\n📝 **Breach**: Breaking a term of the contract (e.g., not paying rent).",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "rental-rights",
+    "contractType": "rental",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Rental Housing Tribunal**: A free body that resolves disputes between landlords and tenants.\n\n⚖️ **Privacy**: You have the right to privacy; landlords cannot enter without notice or permission (except in emergencies).\n\n⚖️ **Deposit Return**: The deposit (plus interest) must be returned within 7 days of the lease ending (or 14-21 days if repairs are needed).",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "rental-negotiation",
+    "contractType": "rental",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Cap the Increase**: Negotiate a fixed percentage for the annual rent increase (e.g., CPI + 1%) to avoid shocks.\n\n💡 **Break Clause**: Ask for a clause allowing you to terminate early with 2 months' notice if your job moves.\n\n💡 **Improvements**: If you improve the property (e.g., install security gates), ask for a rent reduction.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "employment-red-flags",
+    "contractType": "employment",
+    "section": "red-flags",
+    "title": "Red Flags in Employment Contracts",
+    "content": "🚩 **Broad Restraint of Trade**: Preventing you from working in the entire industry for years after leaving\n\n🚩 **Unpaid Overtime**: 'All-inclusive' salary packages that violate the Basic Conditions of Employment Act (BCEA) for lower earners\n\n🚩 **Deductions**: Clauses allowing the employer to deduct money for 'damages' without a disciplinary hearing\n\n🚩 **Probation**: Indefinite or excessively long probation periods\n\n🚩 **Intellectual Property**: Claiming ownership of *everything* you create, even in your own time",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "employment-key-terms",
+    "contractType": "employment",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **CTC (Cost to Company)**: The total package value, including benefits. Your cash salary will be lower.\n\n📝 **Notice Period**: The time you must work after resigning. Usually 2-4 weeks.\n\n📝 **Moonlighting**: Working a second job. Usually requires employer permission.\n\n📝 **CCMA**: Commission for Conciliation, Mediation and Arbitration - the body that handles unfair dismissal.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "employment-rights",
+    "contractType": "employment",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Fair Dismissal**: You can only be fired for misconduct, incapacity, or operational requirements (retrenchment), and a fair process must be followed.\n\n⚖️ **Leave**: You are entitled to 21 consecutive days of annual leave per year.\n\n⚖️ **Sick Leave**: You get 30 days of paid sick leave in every 3-year cycle.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "employment-negotiation",
+    "contractType": "employment",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Review Dates**: Ask for a guaranteed salary review after 6 months if they can't meet your asking price now.\n\n💡 **Flexibility**: Negotiate work-from-home days or flexible hours as part of your package.\n\n💡 **Sign-on Bonus**: Ask for a one-off payment to cover the risk of moving jobs or lost bonuses.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "mortgage-red-flags",
+    "contractType": "mortgage",
+    "section": "red-flags",
+    "title": "Red Flags in Mortgage Agreements",
+    "content": "🚩 **Variable Interest Rate Exposure**: Not understanding how much your repayment will increase if the Prime rate goes up\n\n🚩 **Balloon Payments**: A large lump sum due at the end of the loan term\n\n🚩 **Early Termination Fees**: Penalties for paying off your bond sooner than the 20-year term\n\n🚩 **Hidden Admin Fees**: Monthly service fees that add up over 20 years\n\n🚩 **Mandatory Insurance**: Being forced to use the bank's expensive homeowner's insurance",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "mortgage-key-terms",
+    "contractType": "mortgage",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **Prime Rate**: The benchmark interest rate used by banks. You will get Prime plus or minus a percentage.\n\n📝 **Bond Registration Costs**: Fees paid to attorneys to register the bond at the Deeds Office.\n\n📝 **Initiation Fee**: A once-off fee charged by the bank to open the loan.\n\n📝 **LTV (Loan to Value)**: The size of the loan compared to the property value. 100% LTV means no deposit.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "mortgage-rights",
+    "contractType": "mortgage",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Shop Around**: You are not obliged to accept the first offer. Use a bond originator to get quotes from all banks.\n\n⚖️ **Insurance Choice**: You have the right to use your own insurance provider for the building and life cover, provided it meets the bank's requirements.\n\n⚖️ **Disclosure**: The bank must provide a pre-agreement statement showing the full cost of credit.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "mortgage-negotiation",
+    "contractType": "mortgage",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Rate Concessions**: Even a 0.25% reduction in interest rate saves you thousands over 20 years.\n\n💡 **Discount on Fees**: Ask for a discount on the initiation fee (often R6,000+).\n\n💡 **Deposit**: Putting down even a small deposit (5-10%) usually secures a much better interest rate.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "phone-red-flags",
+    "contractType": "phone",
+    "section": "red-flags",
+    "title": "Red Flags in Phone/Internet Contracts",
+    "content": "🚩 **Fair Usage Policy (FUP)**: 'Uncapped' data that throttles your speed to a crawl after you use a certain amount\n\n🚩 **Device Fees**: Continuing to pay for the phone handset even after the 24-month contract has ended\n\n🚩 **Cancellation Penalties**: Being charged the full remaining subscription value if you cancel early\n\n🚩 **Network Coverage**: Signing a 24-month contract without testing if you actually get signal at your home\n\n🚩 **Content Services**: Automatically subscribing you to expensive daily content (games, news) via WASPs",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "phone-key-terms",
+    "contractType": "phone",
+    "section": "key-terms",
+    "title": "Key Terms to Know",
+    "content": "📝 **Throttling**: Deliberately slowing down your internet speed.\n\n📝 **SIM-only**: A contract for airtime/data only, without a device. Much cheaper and often month-to-month.\n\n📝 **RICA**: The law requiring you to provide proof of address and ID to register a SIM card.\n\n📝 **Top-up**: A contract type where you can't go over your limit unless you manually add airtime.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "phone-rights",
+    "contractType": "phone",
+    "section": "rights",
+    "title": "Your Consumer Rights",
+    "content": "⚖️ **Data Rollover**: Under ICASA regulations, your data should roll over to the next month and not expire immediately.\n\n⚖️ **Cancellation**: You can cancel a fixed-term contract with 20 business days' notice (CPA), subject to a reasonable penalty.\n\n⚖️ **Number Portability**: You have the right to keep your phone number when switching networks.",
+    "lastUpdated": "2024-12-22"
+  },
+  {
+    "adviceId": "phone-negotiation",
+    "contractType": "phone",
+    "section": "negotiation",
+    "title": "Negotiation Tips",
+    "content": "💡 **Keep Your Phone**: If your phone is still good, switch to a SIM-only or prepaid plan to save 50%+.\n\n💡 **Threaten to Leave**: Retention departments often have special 'loyalty' deals not advertised to the public.\n\n💡 **Bundle**: Combining fibre and mobile data with one ISP can lead to discounts.",
+    "lastUpdated": "2024-12-22"
+  }
+]

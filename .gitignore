@@ -6,7 +6,7 @@ frontend/.env
 .DS_Store
 dist
 coverage
-data/
+# data/
 uploads/
 vision-credentials.json
 backend/vision-credentials.json
