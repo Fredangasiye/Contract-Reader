@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AuthPages.css'; // Reusing auth page styles for consistency
+import './RefundPolicy.css'; // Specific overrides
 
 const RefundPolicy = () => {
     const navigate = useNavigate();

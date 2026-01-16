@@ -1,0 +1,84 @@
+/* RefundPolicy.css */
+.policy-page {
+    background: #ffffff !important;
+    /* Override gradient */
+    align-items: flex-start !important;
+    /* Align to top for long content */
+    padding-top: 100px !important;
+    /* Space for navbar */
+    height: auto !important;
+    /* Allow scrolling */
+    min-height: 100vh;
+}
+
+.policy-box {
+    background: #ffffff !important;
+    box-shadow: none !important;
+    /* Cleaner look */
+    max-width: 800px !important;
+    margin: 0 auto;
+    color: #1f2937 !important;
+    /* Dark text */
+    padding: 0 !important;
+    /* Remove default padding if needed, or adjust */
+}
+
+.policy-box h1 {
+    color: #111827 !important;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    text-align: left !important;
+}
+
+.policy-box .last-updated {
+    color: #6b7280 !important;
+    text-align: left !important;
+    margin-bottom: 2rem;
+}
+
+.policy-content section {
+    margin-bottom: 2rem;
+}
+
+.policy-content h2 {
+    color: #111827 !important;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.policy-content p,
+.policy-content li {
+    color: #374151 !important;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.policy-content ul {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.policy-content li {
+    margin-bottom: 0.5rem;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    color: #4f46e5;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0;
+    margin-bottom: 2rem;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
