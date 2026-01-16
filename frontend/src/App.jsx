@@ -10,6 +10,10 @@ import UploadForm from './components/UploadForm';
 import ContractView from './components/ContractView';
 import { useState } from 'react';
 
+function Footer() {
+  return null;
+}
+
 function Navigation() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -36,6 +40,7 @@ function Navigation() {
 
         <div className={`nav-links ${mobileMenuOpen ? 'open' : ''}`}>
           <Link to="/advice" onClick={() => setMobileMenuOpen(false)}>Advice</Link>
+          <Link to="/refund-policy" onClick={() => setMobileMenuOpen(false)}>Refund Policy</Link>
           <Link to="/pricing" onClick={() => setMobileMenuOpen(false)}>Pricing</Link>
           <Link to="/letters/generate" onClick={() => setMobileMenuOpen(false)}>Generate Letter</Link>
           {user ? (
