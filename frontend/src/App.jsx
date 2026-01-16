@@ -8,6 +8,7 @@ import { LetterGenerator, MyLetters } from './components/LetterGenerator';
 import { PaymentSuccess } from './components/PaymentSuccess';
 import UploadForm from './components/UploadForm';
 import ContractView from './components/ContractView';
+import RefundPolicy from './components/RefundPolicy';
 import { useState } from 'react';
 
 function Footer() {
@@ -139,35 +140,6 @@ function ProtectedRoute({ children }) {
   }
 
   return children;
-}
-
-import RefundPolicy from './components/RefundPolicy';
-
-function Footer() {
-  return (
-    <footer className="footer">
-      <div className="footer-content">
-        <div className="footer-section">
-          <h3>Contract Reader</h3>
-          <p>AI-powered contract analysis for everyone.</p>
-        </div>
-        <div className="footer-section">
-          <h4>Legal</h4>
-          <Link to="/refund-policy">Refund Policy</Link>
-          <Link to="/terms">Terms of Service</Link>
-          <Link to="/privacy">Privacy Policy</Link>
-        </div>
-        <div className="footer-section">
-          <h4>Connect</h4>
-          <a href="mailto:support@contractreader.app">Contact Support</a>
-          <a href="https://twitter.com/contractreader" target="_blank" rel="noopener noreferrer">Twitter</a>
-        </div>
-      </div>
-      <div className="footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Contract Reader. All rights reserved.</p>
-      </div>
-    </footer>
-  );
 }
 
 function App() {
