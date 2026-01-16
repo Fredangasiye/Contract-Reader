@@ -90,7 +90,7 @@ const RefundPolicy = () => {
                     <section>
                         <h2>7. Contact Us</h2>
                         <p>
-                            For refund requests or legal inquiries, please contact: <strong>support@contractreader.app</strong>
+                            For refund requests or legal inquiries, please contact: <strong>evolutionmediasa@gmail.com</strong>
                         </p>
                     </section>
                 </div>
