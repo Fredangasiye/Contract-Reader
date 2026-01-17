@@ -10,3 +10,6 @@ coverage
 uploads/
 vision-credentials.json
 backend/vision-credentials.json
+backend/test_*.js
+*.test.js
+*.spec.js
