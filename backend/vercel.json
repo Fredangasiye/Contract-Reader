@@ -1,11 +1,5 @@
 {
     "version": 2,
-    "builds": [
-        {
-            "src": "src/server.js",
-            "use": "@vercel/node"
-        }
-    ],
     "env": {
         "BACKEND_URL": "https://backend-freds-projects-7c342310.vercel.app",
         "FRONTEND_URL": "https://frontend-freds-projects-7c342310.vercel.app"
