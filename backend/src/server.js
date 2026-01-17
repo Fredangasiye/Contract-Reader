@@ -27,21 +27,24 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Contract Reader Backend is running');
+    res.send(`Contract Reader Backend is running (v${new Date().toISOString()})`);
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 app.get('/health', (req, res) => {
-    res.json({ status: 'ok' });
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 app.get('/debug-config', (req, res) => {
+    console.log('Debug endpoint hit');
     const key = process.env.OPENROUTER_API_KEY || '';
+    console.log('Key configured:', !!key);
     res.json({
         keyConfigured: !!key,
         keyLast4: key.length > 4 ? key.slice(-4) : 'too-short',
-        keyLength: key.length
+        keyLength: key.length,
+        timestamp: new Date().toISOString()
     });
 });
 
