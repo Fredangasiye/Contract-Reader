@@ -36,6 +36,15 @@ app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
 });
 
+app.get('/debug-config', (req, res) => {
+    const key = process.env.OPENROUTER_API_KEY || '';
+    res.json({
+        keyConfigured: !!key,
+        keyLast4: key.length > 4 ? key.slice(-4) : 'too-short',
+        keyLength: key.length
+    });
+});
+
 app.use('/upload', uploadRouter);
 app.use('/analyze', analyzeRouter);
 app.use('/admin', adminRouter);
