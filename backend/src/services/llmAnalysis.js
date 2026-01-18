@@ -12,9 +12,9 @@ const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 // Model Configuration with Fallbacks
 const MODELS = [
     'google/gemini-2.0-flash-exp:free',
+    'mistralai/mixtral-8x7b-instruct:free',
     'meta-llama/llama-3.3-70b-instruct:free',
-    'meta-llama/llama-3.1-8b-instruct:free',
-    'qwen/qwen-2-7b-instruct:free'
+    'meta-llama/llama-3.1-8b-instruct:free'
 ];
 
 /**
