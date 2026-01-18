@@ -46,8 +46,10 @@ async function generateSummary(text) {
 
         const prompt = `${contextPrefix}You are a legal contract analyst. Summarize the following document in plain language.
         
-        CRITICAL: Highlight whole phrases or sentences that are most important for the user by wrapping them in <strong> tags. 
-        Do NOT just bold random single words. Bold meaningful clauses, limits, or obligations.
+        CRITICAL INSTRUCTION: You MUST identify the **Most Important Information** (the "bottom line" for the user) and wrap those specific phrases or sentences in <strong> tags. 
+        The rest of the summary should be regular text.
+        
+        Do NOT just bold random single words. Bold meaningful clauses, limits, financial obligations, or termination rights.
         
         Keep the summary concise (3-5 sentences).
         

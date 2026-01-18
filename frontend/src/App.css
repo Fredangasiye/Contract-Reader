@@ -680,12 +680,14 @@
 
 .summary-section strong {
   color: #1e40af;
-  font-weight: 700;
-  background: rgba(59, 130, 246, 0.1);
-  padding: 0 4px;
-  border-radius: 4px;
+  font-weight: 800;
+  background: rgba(59, 130, 246, 0.15);
+  padding: 2px 6px;
+  border-radius: 6px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
+  display: inline-block;
+  margin: 2px 0;
 }
 
 .severity-legend {
