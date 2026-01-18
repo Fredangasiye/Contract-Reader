@@ -95,7 +95,7 @@ async function seedDemoUser() {
 seedDemoUser();
 
 // Start server
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
     app.listen(port, () => {
         console.log(`Backend listening on port ${port}`);
         console.log(`Health check: http://localhost:${port}/health`);
