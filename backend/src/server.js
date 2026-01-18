@@ -38,14 +38,51 @@ app.get('/health', (req, res) => {
 
 app.get('/debug-config', (req, res) => {
     console.log('Debug endpoint hit');
-    const key = process.env.OPENROUTER_API_KEY || '';
-    console.log('Key configured:', !!key);
+    const openRouterKey = process.env.OPENROUTER_API_KEY || '';
+    const supabaseUrl = process.env.SUPABASE_URL || '';
+    const supabaseKey = process.env.SUPABASE_KEY || '';
+    const jwtSecret = process.env.JWT_SECRET || '';
+
     res.json({
-        keyConfigured: !!key,
-        keyLast4: key.length > 4 ? key.slice(-4) : 'too-short',
-        keyLength: key.length,
+        openRouter: {
+            configured: !!openRouterKey,
+            length: openRouterKey.length,
+            last4: openRouterKey.slice(-4)
+        },
+        supabase: {
+            configured: !!(supabaseUrl && supabaseKey),
+            url: supabaseUrl,
+            keyLength: supabaseKey.length,
+            keyLast4: supabaseKey.slice(-4)
+        },
+        jwt: {
+            configured: !!jwtSecret,
+            isDefault: jwtSecret === 'your-secret-key-change-in-production'
+        },
+        env: process.env.NODE_ENV,
+        vercel: !!process.env.VERCEL,
         timestamp: new Date().toISOString()
     });
+});
+
+app.get('/test-db', async (req, res) => {
+    try {
+        const { getUserByEmail } = require('./services/dataStorage');
+        const demoUser = await getUserByEmail('demo@example.com');
+        res.json({
+            success: true,
+            demoUserFound: !!demoUser,
+            demoUser: demoUser ? { email: demoUser.email, tier: demoUser.subscriptionTier } : null,
+            timestamp: new Date().toISOString()
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            stack: error.stack,
+            timestamp: new Date().toISOString()
+        });
+    }
 });
 
 app.use('/upload', uploadRouter);
