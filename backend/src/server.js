@@ -27,7 +27,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-    res.send(`Contract Reader Backend is running (v${new Date().toISOString()} - FORCE BACKEND DEPLOY)`);
+    res.send(`!!! NEW BACKEND VERSION !!! (v${new Date().toISOString()})`);
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
