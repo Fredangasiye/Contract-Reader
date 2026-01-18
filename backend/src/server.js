@@ -1,5 +1,4 @@
 require('dotenv').config();
-console.log('🚀 BACKEND INITIALIZING - VERSION: ' + new Date().toISOString());
 const express = require('express');
 const app = express();
 const port = 8080;
@@ -28,7 +27,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-    res.send(`🚀 DEPLOYMENT_ID: [${Math.random().toString(36).substring(7)}] - TIME: ${new Date().toISOString()}`);
+    res.send('Contract Reader Backend is running');
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());

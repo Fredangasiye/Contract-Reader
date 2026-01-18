@@ -201,8 +201,7 @@ router.post('/', authenticateToken, upload.single('file'), async (req, res) => {
 
         res.status(500).json({
             error: 'Failed to analyze document',
-            message: error.message,
-            debug_info: "Check server logs for full stack trace"
+            message: error.message
         });
     }
 });
