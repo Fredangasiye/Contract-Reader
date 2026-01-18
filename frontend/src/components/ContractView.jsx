@@ -69,9 +69,35 @@ function ContractView({ data, onReset }) {
         );
     };
 
+    const handleDownloadAnalysis = () => {
+        let content = `CONTRACT ANALYSIS RESULTS\n`;
+        content += `=========================\n\n`;
+        content += `SUMMARY:\n${summary}\n\n`;
+        content += `RED FLAGS:\n`;
+
+        flags.forEach(flag => {
+            content += `\n[${getSeverityIcon(flag.severity)}] ${flag.title} (${flag.severity}/100)\n`;
+            content += `Risk: ${flag.plain_english}\n`;
+            content += `Evidence: "${flag.evidence}"\n`;
+        });
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `contract_analysis_${new Date().toISOString().split('T')[0]}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     return (
         <div className="contract-view">
-            <h2>📊 Contract Analysis Results</h2>
+            <div className="view-header">
+                <h2>📊 Contract Analysis Results</h2>
+                <button onClick={handleDownloadAnalysis} className="btn-download-analysis">
+                    ⬇️ Download Analysis
+                </button>
+            </div>
 
             {summary && (
                 <div className="section summary-section">

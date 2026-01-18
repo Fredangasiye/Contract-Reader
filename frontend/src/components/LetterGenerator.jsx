@@ -223,48 +223,98 @@ export function LetterGenerator() {
                 {step === 1 && (
                     <div className="form-section fade-in">
                         <h3>Upload Contract (Optional)</h3>
-                        <p className="step-description">
-                            Upload your contract to automatically extract details, or skip this step to enter them manually.
-                        </p>
 
-                        <div className="upload-wrapper">
-                            <UploadForm onAnalysisComplete={(result) => {
-                                setContractAnalysis(result);
+                        {contractAnalysis ? (
+                            <div className="existing-analysis-prompt">
+                                <div className="ai-context-active">
+                                    <span className="ai-icon">📄</span>
+                                    <div>
+                                        <strong>Contract already analyzed!</strong>
+                                        <p>Would you like to use the contract you just analyzed to generate this letter?</p>
+                                    </div>
+                                </div>
+                                <div className="wizard-actions">
+                                    <button
+                                        type="button"
+                                        className="btn-primary"
+                                        onClick={() => {
+                                            // Auto-fill fields from extracted data if not already done
+                                            if (contractAnalysis.extracted_fields && Object.keys(customData).length <= 1) {
+                                                const extracted = contractAnalysis.extracted_fields;
+                                                const newCustomData = { ...customData, contractText: contractAnalysis.fullText || contractAnalysis.full_text };
+                                                Object.keys(extracted).forEach(key => {
+                                                    if (extracted[key] !== null && extracted[key] !== undefined) {
+                                                        newCustomData[key] = extracted[key];
+                                                    }
+                                                });
+                                                setCustomData(newCustomData);
+                                            }
+                                            if (contractAnalysis.suggested_letter_type) {
+                                                setSelectedTemplate(contractAnalysis.suggested_letter_type);
+                                            }
+                                            setStep(2);
+                                        }}
+                                    >
+                                        Yes, use current contract →
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        onClick={() => {
+                                            setContractAnalysis(null);
+                                            setCustomData({});
+                                        }}
+                                    >
+                                        No, upload a different one
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <p className="step-description">
+                                    Upload your contract to automatically extract details, or skip this step to enter them manually.
+                                </p>
 
-                                // Auto-fill fields from extracted data
-                                if (result.extracted_fields) {
-                                    const extracted = result.extracted_fields;
-                                    const newCustomData = { contractText: result.fullText };
+                                <div className="upload-wrapper">
+                                    <UploadForm onAnalysisComplete={(result) => {
+                                        setContractAnalysis(result);
 
-                                    // Merge extracted fields into customData
-                                    Object.keys(extracted).forEach(key => {
-                                        if (extracted[key] !== null && extracted[key] !== undefined) {
-                                            newCustomData[key] = extracted[key];
+                                        // Auto-fill fields from extracted data
+                                        if (result.extracted_fields) {
+                                            const extracted = result.extracted_fields;
+                                            const newCustomData = { contractText: result.fullText || result.full_text };
+
+                                            // Merge extracted fields into customData
+                                            Object.keys(extracted).forEach(key => {
+                                                if (extracted[key] !== null && extracted[key] !== undefined) {
+                                                    newCustomData[key] = extracted[key];
+                                                }
+                                            });
+
+                                            setCustomData(newCustomData);
                                         }
-                                    });
 
-                                    setCustomData(newCustomData);
-                                }
+                                        // Auto-select suggested letter type
+                                        if (result.suggested_letter_type) {
+                                            setSelectedTemplate(result.suggested_letter_type);
+                                        }
 
-                                // Auto-select suggested letter type
-                                if (result.suggested_letter_type) {
-                                    setSelectedTemplate(result.suggested_letter_type);
-                                }
+                                        // Move to step 2 (template selection)
+                                        setStep(2);
+                                    }} />
+                                </div>
 
-                                // Move to step 2 (template selection)
-                                setStep(2);
-                            }} />
-                        </div>
-
-                        <div className="wizard-actions right">
-                            <button
-                                type="button"
-                                className="btn-secondary"
-                                onClick={handleNext}
-                            >
-                                Skip for now →
-                            </button>
-                        </div>
+                                <div className="wizard-actions right">
+                                    <button
+                                        type="button"
+                                        className="btn-secondary"
+                                        onClick={handleNext}
+                                    >
+                                        Skip for now →
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
 

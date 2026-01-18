@@ -14,7 +14,7 @@ const MODELS = [
     'mistralai/mixtral-8x7b-instruct:free',
     'google/gemini-2.0-flash-exp:free',
     'meta-llama/llama-3.3-70b-instruct:free',
-    'meta-llama/llama-3.1-8b-instruct:free'
+    'deepseek/deepseek-chat:free'
 ];
 
 /**
@@ -245,7 +245,8 @@ INSTRUCTIONS:
     *   **The Law**: Apply the relevant SA legal acts to override unfair contract terms.
     *   **The Demand**: State exactly what is required (refund, cancellation, payout) and a deadline (e.g., 7 days).
     *   **The Consequence**: Mention further action (Ombudsman, NCC, legal counsel) if demands are not met.
-6.  **NO PLACEHOLDERS**: Do NOT use brackets like [Insert Date] or [Specific concerns]. Fill every section based on the provided data or logical inference.
+6.  **NO PLACEHOLDERS**: Do NOT use brackets like [Insert Date] or [Specific concerns]. If a piece of information is missing, use a professional generalisation or leave it out entirely if it doesn't hurt the argument. NEVER output text like "[explain why this should be covered]".
+7.  **WINNING ARGUMENT**: Based on the contract text, find the strongest legal loophole or consumer right that guarantees the user a win.
 
 USER INFORMATION:
 Name: ${userInfo.name || 'The Consumer'}
