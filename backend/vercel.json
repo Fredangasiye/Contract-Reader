@@ -1,7 +1,7 @@
 {
     "version": 2,
     "env": {
-        "BACKEND_URL": "https://backend-freds-projects-7c342310.vercel.app",
+        "BACKEND_URL": "https://contract-reader-iznb-hev6hn80x-freds-projects-7c342310.vercel.app",
         "FRONTEND_URL": "https://frontend-freds-projects-7c342310.vercel.app"
     },
     "headers": [
