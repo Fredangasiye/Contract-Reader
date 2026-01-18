@@ -202,7 +202,7 @@ router.post('/', authenticateToken, upload.single('file'), async (req, res) => {
         res.status(500).json({
             error: 'Failed to analyze document',
             message: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            debug_info: "Check server logs for full stack trace"
         });
     }
 });
