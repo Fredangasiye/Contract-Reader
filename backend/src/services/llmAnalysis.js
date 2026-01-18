@@ -13,8 +13,7 @@ const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 const MODELS = [
     'mistralai/mixtral-8x7b-instruct:free',
     'google/gemini-2.0-flash-exp:free',
-    'meta-llama/llama-3.3-70b-instruct:free',
-    'deepseek/deepseek-chat:free'
+    'meta-llama/llama-3.3-70b-instruct:free'
 ];
 
 /**
