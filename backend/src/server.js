@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.get('/', (req, res) => {
-    res.send(`!!! NEW BACKEND VERSION !!! (v${new Date().toISOString()})`);
+    res.send(`🚀 DEPLOYMENT_ID: [${Math.random().toString(36).substring(7)}] - TIME: ${new Date().toISOString()}`);
 });
 
 app.get('/favicon.ico', (req, res) => res.status(204).end());
