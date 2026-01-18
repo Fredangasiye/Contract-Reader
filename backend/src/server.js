@@ -1,4 +1,5 @@
 require('dotenv').config();
+console.log('🚀 BACKEND INITIALIZING - VERSION: ' + new Date().toISOString());
 const express = require('express');
 const app = express();
 const port = 8080;
