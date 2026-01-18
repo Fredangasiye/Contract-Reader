@@ -44,11 +44,21 @@ async function ensureStorageDir() {
  */
 function encrypt(text) {
     if (!text) return text;
-    const iv = crypto.randomBytes(16);
-    const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.substring(0, 32)), iv);
-    let encrypted = cipher.update(text, 'utf8', 'base64');
-    encrypted += cipher.final('base64');
-    return iv.toString('base64') + ':' + encrypted;
+    try {
+        const iv = crypto.randomBytes(16);
+        // Ensure key is exactly 32 bytes by padding or truncating
+        const key = Buffer.alloc(32);
+        const keySource = Buffer.from(ENCRYPTION_KEY);
+        keySource.copy(key, 0, 0, Math.min(keySource.length, 32));
+
+        const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
+        let encrypted = cipher.update(text, 'utf8', 'base64');
+        encrypted += cipher.final('base64');
+        return iv.toString('base64') + ':' + encrypted;
+    } catch (error) {
+        console.error('Encryption failed:', error);
+        return text; // Fallback to plain text if encryption fails (better than crashing)
+    }
 }
 
 /**
@@ -60,7 +70,13 @@ function decrypt(encryptedText) {
         const parts = encryptedText.split(':');
         const iv = Buffer.from(parts[0], 'base64');
         const encrypted = parts[1];
-        const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.substring(0, 32)), iv);
+
+        // Ensure key is exactly 32 bytes
+        const key = Buffer.alloc(32);
+        const keySource = Buffer.from(ENCRYPTION_KEY);
+        keySource.copy(key, 0, 0, Math.min(keySource.length, 32));
+
+        const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
         let decrypted = decipher.update(encrypted, 'base64', 'utf8');
         decrypted += decipher.final('utf8');
         return decrypted;
