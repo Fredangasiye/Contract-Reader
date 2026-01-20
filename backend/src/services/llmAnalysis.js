@@ -9,6 +9,10 @@ const axios = require('axios');
 const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').trim();
 const OPENROUTER_BASE_URL = 'https://openrouter.ai/api/v1';
 
+// Local Ollama Configuration (via ngrok)
+const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL || '').trim();
+const OLLAMA_MODEL = process.env.OLLAMA_MODEL || 'llama3.1:8b';
+
 // Model Configuration with Fallbacks
 const MODELS = [
     'mistralai/mixtral-8x7b-instruct:free',
@@ -22,8 +26,8 @@ const MODELS = [
  * @returns {Promise<string>} - Summary
  */
 async function generateSummary(text) {
-    if (!OPENROUTER_API_KEY) {
-        console.warn('OpenRouter API key missing. Using stub summary.');
+    if (!OPENROUTER_API_KEY && !OLLAMA_BASE_URL) {
+        console.warn('No LLM provider configured. Using stub summary.');
         return generateSummaryStub(text);
     }
 
@@ -74,7 +78,7 @@ async function generateSummary(text) {
  * @returns {Promise<Array>} - Enhanced flags
  */
 async function enhanceRedFlags(text, rulesFlags) {
-    if (!OPENROUTER_API_KEY || rulesFlags.length === 0) {
+    if ((!OPENROUTER_API_KEY && !OLLAMA_BASE_URL) || rulesFlags.length === 0) {
         return rulesFlags; // Return as-is
     }
 
@@ -146,7 +150,7 @@ For each flag, confirm if it's a genuine concern and add any additional insights
  * @returns {Promise<Array>} - Additional flags
  */
 async function detectBlindSpots(text) {
-    if (!OPENROUTER_API_KEY) {
+    if (!OPENROUTER_API_KEY && !OLLAMA_BASE_URL) {
         return [];
     }
 
@@ -209,8 +213,8 @@ Respond with JSON array only:`;
  * @returns {Promise<string>} - Generated complete letter
  */
 async function generateLetterContent(contractText, letterType, userSituation, customData = {}, userInfo = {}) {
-    if (!OPENROUTER_API_KEY) {
-        console.warn('OpenRouter API key missing. Cannot generate AI letter.');
+    if (!OPENROUTER_API_KEY && !OLLAMA_BASE_URL) {
+        console.warn('No LLM provider configured. Cannot generate AI letter.');
         return null;
     }
 
@@ -301,6 +305,12 @@ async function callLLMWithFallback(prompt, options = {}) {
 async function callLLM(prompt, options = {}) {
     const { maxTokens = 500, temperature = 0.3, model = MODELS[0] } = options;
 
+    // If OLLAMA_BASE_URL is set, use local Ollama
+    if (OLLAMA_BASE_URL) {
+        return callOllama(prompt, { maxTokens, temperature });
+    }
+
+    // Otherwise, use OpenRouter
     try {
         const response = await axios.post(
             `${OPENROUTER_BASE_URL}/chat/completions`,
@@ -336,6 +346,54 @@ async function callLLM(prompt, options = {}) {
             throw new Error(`OpenRouter failed (${error.response.status}) with key ${maskedKey}: ${JSON.stringify(error.response.data)}`);
         }
         console.error('LLM Request Error:', error.message);
+        throw error;
+    }
+}
+
+/**
+ * Call Local Ollama API (via ngrok)
+ * @param {string} prompt - Prompt text
+ * @param {Object} options - Options
+ * @returns {Promise<string>} - Response text
+ */
+async function callOllama(prompt, options = {}) {
+    const { maxTokens = 500, temperature = 0.3 } = options;
+
+    try {
+        console.log(`🦙 Calling local Ollama at ${OLLAMA_BASE_URL} with model: ${OLLAMA_MODEL}`);
+
+        const response = await axios.post(
+            `${OLLAMA_BASE_URL}/api/generate`,
+            {
+                model: OLLAMA_MODEL,
+                prompt: prompt,
+                stream: false,
+                options: {
+                    temperature: temperature,
+                    num_predict: maxTokens
+                }
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Critical header to bypass ngrok browser warning
+                    'ngrok-skip-browser-warning': 'true'
+                },
+                timeout: 60000 // Longer timeout for local models
+            }
+        );
+
+        if (!response.data || !response.data.response) {
+            throw new Error('Invalid response format from Ollama');
+        }
+
+        return response.data.response;
+    } catch (error) {
+        if (error.response) {
+            console.error('Ollama API Error:', error.response.status, JSON.stringify(error.response.data));
+            throw new Error(`Ollama failed (${error.response.status}): ${JSON.stringify(error.response.data)}`);
+        }
+        console.error('Ollama Request Error:', error.message);
         throw error;
     }
 }
@@ -403,8 +461,8 @@ function generateSummaryStub(text) {
  * @returns {Promise<Object>} - Extracted fields
  */
 async function extractContractFields(contractText, contractType) {
-    if (!OPENROUTER_API_KEY) {
-        console.warn('OpenRouter API key missing. Returning empty fields.');
+    if (!OPENROUTER_API_KEY && !OLLAMA_BASE_URL) {
+        console.warn('No LLM provider configured. Returning empty fields.');
         return {
             suggestedLetterType: mapContractTypeToLetterType(contractType),
             fields: {}
